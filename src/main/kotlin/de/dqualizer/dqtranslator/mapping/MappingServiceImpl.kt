@@ -3,6 +3,7 @@ package de.dqualizer.dqtranslator.mapping
 import com.fasterxml.jackson.databind.ObjectMapper
 import de.dqualizer.dqtranslator.ContextNotFoundException
 import dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.DomainArchitectureMapping
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.File
@@ -12,6 +13,8 @@ import java.nio.file.Files
 class MappingServiceImpl (
         private val objectMapper: ObjectMapper
 )  : MappingService{
+    private val log = LoggerFactory.getLogger(MappingServiceImpl::class.java)
+
     @Value("\${dqualizer.mappingDirectory}")
     private lateinit var mappingDirectory: String
 
@@ -19,6 +22,8 @@ class MappingServiceImpl (
         get() = this::class.java.classLoader.getResource("").file.substring(1) + mappingDirectory
 
     override fun getMappingByContext(context: String): DomainArchitectureMapping {
+        log.info("Trying to load context=$context from $mappingPath")
+
         return File(mappingPath).walk()
                 .filter { it.isFile }
                 .map { Files.readString(it.toPath()) }
