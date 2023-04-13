@@ -22,12 +22,7 @@ class MappingServiceImpl (
         get() = this::class.java.classLoader.getResource("").file.substring(1) + mappingDirectory
 
     override fun getMappingByContext(context: String): DomainArchitectureMapping {
-        log.info("Trying to load context=$context from $mappingPath")
-
-        return File(mappingPath).walk()
-                .filter { it.isFile }
-                .map { Files.readString(it.toPath()) }
-                .map { objectMapper.readValue(it, DomainArchitectureMapping::class.java) }
-                .firstOrNull { it.context == context } ?: throw ContextNotFoundException(context)
+        val json = MappingServiceImpl::class.java.getResource("/$mappingDirectory/mapping-werkstatt.json")
+        return objectMapper.readValue(json, DomainArchitectureMapping::class.java)
     }
 }
