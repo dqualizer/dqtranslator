@@ -1,0 +1,123 @@
+{
+    "version": 1.0,
+    "context": "werkstattauftrag",
+    "server_info": [
+        {
+            "host": "http://127.0.0.1:9000",
+            "environment": "TEST"
+        }
+    ],
+    "objects": [
+        {
+            "dq_id": "id1",
+            "name": "AuftragsPortal",
+            "operation_id": "ddd.autohaus.tacticald.design.app.werkstattauftrag.api.WerkstattauftragController",
+            "type": "class",
+            "implements": [],
+            "objects": [ "id2" ],
+            "activities": [
+                {
+                    "dq_id": "id3",
+                    "name": "Auftrag lesen",
+                    "operation_id": "readAuftrag",
+                    "type": "method",
+                    "parameter": [],
+                    "endpoint": {
+                        "field": "/auftrag/{auftragsnummer}",
+                        "operation": "GET",
+                        "path_variables": {
+                            "auftragsnummer": "auftrag/auftragsnummern/angelegt.json"
+                        },
+                        "url_parameter": {},
+                        "request_parameter": {},
+                        "payload": {},
+                        "responses": [
+                            {
+                                "expected_code": 200,
+                                "type": "id8"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "dq_id": "id4",
+                    "name": "Auftrag erstellen",
+                    "operation_id": "createAuftrag",
+                    "type": "method",
+                    "parameter": [ "id6" ],
+                    "endpoint": {
+                        "field": "/auftrag/new",
+                        "operation": "POST",
+                        "path_variables": {},
+                        "url_parameter": {},
+                        "request_parameter": {
+                            "headers": "auftrag/allgemein/headers.json",
+                            "authorization": "auftrag/allgemein/authorization.json"
+                        },
+                        "payload": {
+                            "auftraggeber_2022": "auftrag/auftraggeber/2022/auftraggeber.json",
+                            "auftraggeber_2023": "auftrag/auftraggeber/2023/auftraggeber.json"
+                        },
+                        "responses": [
+                            {
+                                "expected_code": 201,
+                                "type": "id8"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "dq_id": "id5",
+                    "name": "Status verändern",
+                    "operation_id": "updateStatus",
+                    "type": "method",
+                    "parameter": [ "id7" ],
+                    "endpoint": {
+                        "field": "/auftrag/{auftragsnummer}",
+                        "operation": "PUT",
+                        "path_variables": {
+                            "auftragsnummer": "auftrag/auftragsnummern/angelegt.json"
+                        },
+                        "url_parameter": {},
+                        "request_parameter": {
+                            "headers": "auftrag/allgemein/headers.json"
+                        },
+                        "payload": {
+                            "auftragsstatus": "auftrag/auftragsstatus/auftragsstatus.json"
+                        },
+                        "responses": [
+                            {
+                                "expected_code": 200,
+                                "type": "string"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "dq_id": "id2",
+            "name": "WerkstattauftragService",
+            "operation_id": "ddd.autohaus.tacticald.design.app.werkstattauftrag.api.WerkstattauftragService",
+            "type": "class"
+        },
+        {
+            "dq_id": "id6",
+            "name": "Auftraggeber",
+            "operation_id": "ddd.autohaus.tacticald.design.app.werkstattauftrag.model.auftraggeber.Auftraggeber",
+            "type": "class"
+        },
+        {
+            "dq_id": "id7",
+            "name": "Auftragsstatus",
+            "operation_id": "ddd.autohaus.tacticald.design.app.werkstattauftrag.model.auftragsstatus.Auftragsstatus",
+            "type": "class"
+        },
+        {
+            "dq_id": "id8",
+            "name": "Auftrag",
+            "operation_id": "ddd.autohaus.tacticald.design.app.werkstattauftrag.model.Werkstattauftrag",
+            "type": "class"
+        }
+    ]
+}
