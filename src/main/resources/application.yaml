@@ -5,4 +5,4 @@ dqualizer:
     loadtestQueue: 'loadtest'
     loadtestExchange: 'translator-loadtest'
 
-  mappingDirectory: 'mapping'
+  mappingDirectory: 'mappings'
