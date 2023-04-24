@@ -1,0 +1,8 @@
+dqualizer:
+  rabbitmq:
+    rqaDefinitionQueue: 'modeling'
+    rqaExchange: 'modeler-translator'
+    loadtestQueue: 'loadtest'
+    loadtestExchange: 'translator-loadtest'
+
+  mappingDirectory: 'mappings'

@@ -1,0 +1,158 @@
+{
+    "version": 1.0,
+    "context": "sales",
+    "server_info": [
+        {   
+            "host": "http://127.0.0.1:9000",
+            "environment": "TEST"
+        }
+    ],
+    "objects": [
+        {
+            "dq_id": "id1",
+            "name": "salesperson",
+            "operation_id": "io.leasingninja.sales.ui.SalesController",
+            "type": "class",
+            "implements": [],
+            "objects": [
+                "id6",
+                "id7",
+                "id8"
+            ],
+            "activities": [
+                {
+                    "dq_id": "id2",
+                    "name": "fills out",
+                    "operation_id": "filloutContract",
+                    "type": "method",
+                    "parameter": [],
+                    "endpoint": {
+                        "field": "/sales/fillout_contract",
+                        "operation": "POST",
+                        "path_variables": {},
+                        "url_parameter": {
+                            "fillout_contract_eu": "sales/url/fillout_contract_params_eu.json",
+                            "fillout_contract_us": "sales/url/fillout_contract_params_us.json"
+                        },
+                        "request_parameter": {
+                            "headers": "sales/allgemein/headers.json"
+                        },
+                        "payload": {},
+                        "responses": [
+                            {
+                                "expected_code": 200,
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "dq_id": "id3",
+                    "name": "shows and offer",
+                    "operation_id": "viewContract",
+                    "type": "method",
+                    "parameter": [],
+                    "endpoint": {
+                        "field": "/sales/view_contract",
+                        "operation": "GET",
+                        "path_variables": {},
+                        "url_parameter": {
+                            "view_contract": "sales/url/view_contract_params.json"
+                        },
+                        "request_parameter": {},
+                        "payload": {},
+                        "responses": [
+                            {
+                                "expected_code": 200,
+                                "type": "string"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "dq_id": "id4",
+            "name": "customer",
+            "operation_id": "io.leasingninja.sales.ui.SalesController",
+            "type": "class",
+            "implements": [],
+            "objects": [
+                "id6",
+                "id7",
+                "id8"
+            ],
+            "activities": [
+                {
+                    "dq_id": "id5",
+                    "name": "signs",
+                    "operation_id": "signContract",
+                    "type": "method",
+                    "parameter": [],
+                    "endpoint": {
+                        "field": "/sales/sign_contract",
+                        "operation": "POST",
+                        "path_variables": {},
+                        "url_parameter": {
+                            "sign_contract": "sales/url/sign_contract_params.json"
+                        },
+                        "request_parameter": {
+                            "headers": "sales/allgemein/headers.json"
+                        },
+                        "payload": {},
+                        "responses": [
+                            {
+                                "expected_code": 200,
+                                "type": "string"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "dq_id": "id6",
+            "name": "FilloutContract",
+            "operation_id": "io.leasingninja.sales.application.FilloutContract",
+            "type": "class",
+            "implements": [],
+            "objects": [],
+            "activities": []
+        },
+        {
+            "dq_id": "id7",
+            "name": "ViewContract",
+            "operation_id": "io.leasingninja.sales.application.ViewContract",
+            "type": "class",
+            "implements": [],
+            "objects": [],
+            "activities": []
+        },
+        {
+            "dq_id": "id8",
+            "name": "SignContract",
+            "operation_id": "io.leasingninja.sales.application.SignContract",
+            "type": "class",
+            "implements": [],
+            "objects": [],
+            "activities": []
+        },
+        {
+            "dq_id": "id9",
+            "name": "Contract",
+            "operation_id": "io.leasingninja.sales.domain.Contract",
+            "type": "class",
+            "implements": [],
+            "objects": [],
+            "activities": [
+                {
+                    "dq_id": "id10",
+                    "name": "calculates",
+                    "operation_id": "calculateInstallmentFor",
+                    "type": "method",
+                    "parameter": []
+                }
+            ]
+        }
+    ]
+}
