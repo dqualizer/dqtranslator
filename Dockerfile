@@ -9,7 +9,7 @@ ARG GITHUB_USER
 ARG GITHUB_PACKAGE_READ_TOKEN
 
 
-FROM gradle:8-alpine AS builder-base-image
+FROM --platform=$BUILDPLATFORM gradle:8-alpine AS builder-base-image
 
 # Set the working directory to /app
 WORKDIR /app
@@ -55,7 +55,7 @@ RUN gradle --init-script gradle/init.gradle assemble
 
 
 #### ----------- Runner Definiton ----------- ###
-FROM eclipse-temurin:19-jre-alpine
+FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre-alpine
 
 # Set the working directory to /app
 WORKDIR /app
@@ -67,4 +67,3 @@ EXPOSE 8080
 
 # Run the jar file
 CMD ["java", "-jar", "app.jar"]
-
