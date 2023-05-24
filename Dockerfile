@@ -63,7 +63,10 @@ WORKDIR /app
 # Copy the jar file from the build stage
 COPY --from=build-executor /app/build/libs/*.jar /app/app.jar
 
+RUN wget -O ./opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+
+
 EXPOSE 8080
 
 # Run the jar file
-CMD ["java", "-jar", "app.jar"]
+CMD ["java","-javaagent:opentelemetry-javaagent.jar", "-jar", "app.jar"]
