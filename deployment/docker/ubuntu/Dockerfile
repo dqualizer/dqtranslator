@@ -9,11 +9,12 @@ ARG GITHUB_USER
 ARG GITHUB_PACKAGE_READ_TOKEN
 
 
-FROM --platform=$BUILDPLATFORM gradle:8-alpine AS builder-base-image
+FROM --platform=$BUILDPLATFORM gradle:8 AS builder-base-image
 
 # Set the working directory to /app
 WORKDIR /app
 COPY . .
+RUN chmod +x scripts/setup.sh
 
 
 ### ----------- Builder CI ----------- ###
@@ -27,17 +28,21 @@ FROM builder-base-image as local-builder
 ARG GITHUB_USER
 ARG GITHUB_PACKAGE_READ_TOKEN
 
-# ensure envsubst
-RUN apk update && apk add gettext
+ARG DEBIAN_FRONTEND=noninteractive
 
+# ensure envsubst
+RUN apt-get -qq update
+RUN apt-get -qq -y --no-install-recommends install gettext
+RUN ./scripts/setup.sh $GITHUB_USER $GITHUB_PACKAGE_READ_TOKEN
+
+RUN 
 ### ----------- Builder Resolver and Executor ----------- ###
 FROM ${EXECUTION_ENV}-builder as build-executor
-RUN ./scripts/setup.sh $GITHUB_USER $GITHUB_PACKAGE_READ_TOKEN
 RUN gradle --init-script gradle/init.gradle assemble
 
 
 #### ----------- Runner Definiton ----------- ###
-FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre-alpine
+FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre
 
 # Set the working directory to /app
 WORKDIR /app
