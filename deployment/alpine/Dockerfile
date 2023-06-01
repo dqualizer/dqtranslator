@@ -16,7 +16,6 @@ WORKDIR /app
 COPY . .
 
 
-
 ### ----------- Builder CI ----------- ###
 FROM builder-base-image as ci-builder
 ARG GITHUB_PACKAGE_READ_TOKEN
