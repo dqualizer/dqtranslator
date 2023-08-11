@@ -9,7 +9,7 @@
     ],
     "objects": [
         {
-            "dq_id": "id1",
+            "dq_id": "64d5ee1d5ac6a631c8fa9b35",
             "name": "AuftragsPortal",
             "operation_id": "ddd.autohaus.tacticald.design.app.werkstattauftrag.api.WerkstattauftragController",
             "type": "class",
@@ -17,7 +17,7 @@
             "objects": [ "id2" ],
             "activities": [
                 {
-                    "dq_id": "id3",
+                    "dq_id": "64d5ee1d5ac6a631c8fa9b36",
                     "name": "Auftrag lesen",
                     "operation_id": "readAuftrag",
                     "type": "method",
@@ -40,7 +40,7 @@
                     }
                 },
                 {
-                    "dq_id": "id4",
+                    "dq_id": "64d5ee1d5ac6a631c8fa9b37",
                     "name": "Auftrag erstellen",
                     "operation_id": "createAuftrag",
                     "type": "method",
@@ -67,7 +67,7 @@
                     }
                 },
                 {
-                    "dq_id": "id5",
+                    "dq_id": "64d5ee1d5ac6a631c8fa9b38",
                     "name": "Status verändern",
                     "operation_id": "updateStatus",
                     "type": "method",
