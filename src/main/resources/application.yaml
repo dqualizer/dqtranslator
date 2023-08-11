@@ -1,7 +1,7 @@
 spring:
   jackson:
     deserialization:
-      fail-on-unknown-properties=false:
+      fail-on-unknown-properties=false
 dqualizer:
   rabbitmq:
     rqaDefinitionQueue: 'modeling'
