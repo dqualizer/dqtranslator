@@ -1,8 +1,9 @@
 dqualizer:
-  rabbitmq:
-    rqaDefinitionQueue: 'modeling'
-    rqaExchange: 'modeler-translator'
-    loadtestQueue: 'loadtest'
-    loadtestExchange: 'translator-loadtest'
+  messaging:
+    queues: # Queues to connect to
+      rqaDefinitionReceiverQueue:
+        name: 'rqaDefinitionReceiver'
+      rqaConfigurationProducerQueue:
+        name: 'rqaConfigurationProducer'
 
   mappingDirectory: 'mappings'

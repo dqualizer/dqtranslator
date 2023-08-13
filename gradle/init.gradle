@@ -1,7 +1,7 @@
 allprojects {
     repositories {
         maven {
-            url 'https://maven.pkg.github.com/dqualizer/dqlang'
+            url 'https://maven.pkg.github.com/io.github.dqualizer.dqlang'
             credentials(HttpHeaderCredentials) {
                 name = 'authorization'
                 value = 'Bearer ' + System.getenv('GITHUB_TOKEN')

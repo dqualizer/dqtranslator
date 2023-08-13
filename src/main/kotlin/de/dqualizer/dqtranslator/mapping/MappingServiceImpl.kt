@@ -2,7 +2,7 @@ package de.dqualizer.dqtranslator.mapping
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import de.dqualizer.dqtranslator.ContextNotFoundException
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.DomainArchitectureMapping
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ResourceLoader

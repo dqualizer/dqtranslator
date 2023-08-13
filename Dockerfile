@@ -36,7 +36,7 @@ RUN cd gradle \
   && echo $' allprojects {\n\
   repositories {\n\
   maven {\n\
-  url =  uri("https://maven.pkg.github.com/dqualizer/dqlang")\n\
+  url =  uri("https://maven.pkg.github.com/io.github.dqualizer.dqlang")\n\
   credentials {\n\
   username = "$GITHUB_USER"\n\
   password = "$GITHUB_PACKAGE_READ_TOKEN"\n\
