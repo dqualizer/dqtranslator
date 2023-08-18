@@ -22,6 +22,11 @@ class LoadTestTranslator(
     private val log = LoggerFactory.getLogger(TranslationService::class.java)
 
     override fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion, target: RQAConfiguration): RQAConfiguration {
+        if(rqaDefinition.rqa.loadtests.size <= 0){
+            log.debug("No loadtests found in RQA Definition")
+            return target
+        }
+
         val mapping = mappingService.getMappingByContext(rqaDefinition.context)
 
         val loadTestSpecs = rqaDefinition.rqa.loadtests

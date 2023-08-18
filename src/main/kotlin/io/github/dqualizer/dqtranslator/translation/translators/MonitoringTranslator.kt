@@ -30,6 +30,12 @@ class MonitoringTranslator(
 
 
     override fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion, target: RQAConfiguration): RQAConfiguration {
+        if(rqaDefinition.rqa.monitoring.size <= 0){
+            log.debug("No monitoring definitions found in RQA Definition")
+            return target
+        }
+
+
         val dam = mappingService.getMappingByContext(rqaDefinition.context)
         val services = dam.system.services.associateBy({ it.name }, { it })
 
