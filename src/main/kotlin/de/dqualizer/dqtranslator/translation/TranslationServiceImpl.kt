@@ -2,13 +2,14 @@ package de.dqualizer.dqtranslator.translation
 
 import de.dqualizer.dqtranslator.EnvironmentNotFoundException
 import de.dqualizer.dqtranslator.mapping.MappingService
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.DomainArchitectureMapping
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.Endpoint
+import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.Endpoint
 import dqualizer.dqlang.archive.loadtesttranslator.dqlang.loadtest.LoadTest
 import dqualizer.dqlang.archive.loadtesttranslator.dqlang.loadtest.LoadTestConfig
 import dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.Artifact
 import dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.ModeledLoadTest
 import dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
+import io.github.dqualizer.dqlang.archive.k6adapter.dqlang.loadtest.LoadTestConfig
+import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -19,7 +20,8 @@ class TranslationServiceImpl(
     private val log = LoggerFactory.getLogger(TranslationService::class.java)
 
     override fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion): LoadTestConfig {
-        val mapping = mappingService.getMappingByContext(rqaDefinition.context)
+        // Get Mapping from Api by domain_id
+        val mapping = mappingService.getMappingByIdrqaDefinition.getDomainId())
 
         val loadTestSpecs = rqaDefinition.rqa.loadtests
         val nodes = loadTestSpecs.filter { it.artifact.isNode() }

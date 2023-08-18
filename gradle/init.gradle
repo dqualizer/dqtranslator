@@ -4,7 +4,8 @@ allprojects {
             url 'https://maven.pkg.github.com/dqualizer/dqlang'
             credentials(HttpHeaderCredentials) {
                 name = 'authorization'
-                value = 'Bearer ' + System.getenv('GITHUB_TOKEN')
+                value = 'Bearer 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'
+
             }
             authentication {
                 header(HttpHeaderAuthentication)

@@ -1,6 +1,6 @@
 {
     "version": 1.0,
-    "context": "werkstattauftrag",
+    "context": "Werkstatt",
     "server_info": [
         {
             "host": "http://127.0.0.1:9000",

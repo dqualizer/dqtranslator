@@ -49,6 +49,12 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven("https://maven.pkg.github.com/dqualizer/dqlang") {
+		credentials {
+			username = "levinkerschberger"
+			password = "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"
+		}
+	}
 }
 
 dependencies {
@@ -56,9 +62,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
-
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-	implementation("dqualizer:dqlang:0.2.0")
+	implementation("io.github.dqualizer:dqlang:1.0.5-SNAPSHOT")
+	implementation("io.ktor:ktor-client-core:2.3.3")
+	implementation("io.ktor:ktor-client-cio:2.3.3")
+	implementation("io.ktor:ktor-client-logging:2.3.3")
+
 }
 
 tasks.withType<KotlinCompile> {
