@@ -1,4 +1,4 @@
-package de.dqualizer.dqtranslator.messaging
+package io.github.dqualizer.dqtranslator.messaging
 
 import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
 import org.springframework.amqp.core.MessageProperties

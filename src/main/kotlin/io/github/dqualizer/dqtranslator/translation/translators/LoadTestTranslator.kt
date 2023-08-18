@@ -1,17 +1,17 @@
-package de.dqualizer.dqtranslator.translation.translators
+package io.github.dqualizer.dqtranslator.translation.translators
 
-import de.dqualizer.dqtranslator.EnvironmentNotFoundException
-import de.dqualizer.dqtranslator.mapping.MappingService
-import de.dqualizer.dqtranslator.translation.RQATranslator
-import de.dqualizer.dqtranslator.translation.TranslationService
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.DomainArchitectureMapping
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.Endpoint
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.loadtest.LoadTest
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.Artifact
 import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.ModeledLoadTest
 import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
+import io.github.dqualizer.dqtranslator.EnvironmentNotFoundException
+import io.github.dqualizer.dqtranslator.mapping.MappingService
+import io.github.dqualizer.dqtranslator.translation.RQATranslator
+import io.github.dqualizer.dqtranslator.translation.TranslationService
+import io.github.dqualizer.dqlang.types.domain_architecture_mapping.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.domain_architecture_mapping.Endpoint
+import io.github.dqualizer.dqlang.types.load_test_configuration.LoadTest
 import io.github.dqualizer.dqlang.types.load_test_configuration.LoadTestConfiguration
 import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
+import io.github.dqualizer.dqlang.types.rqa_definition.Artifact
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -43,7 +43,7 @@ class LoadTestTranslator(
     }
 
     fun nodeToLoadTests(loadtestSpec: ModeledLoadTest, mapping: DomainArchitectureMapping): List<LoadTest> {
-        return mapping.objects.firstOrNull { it.dqID == loadtestSpec.artifact.`object` }
+        return mapping.objects.firstOrNull { it.dqId == loadtestSpec.artifact.`object` }
             ?.activities?.map { activity -> activity.endpoint }?.map {
                 LoadTest(
                     loadtestSpec.artifact,
@@ -67,8 +67,8 @@ class LoadTestTranslator(
     }
 
     private fun ModeledLoadTest.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
-        return mapping.objects.firstOrNull { it.dqID == this.artifact.objectId }
-            ?.activities?.firstOrNull { it.dqID == this.artifact.activity }
+        return mapping.objects.firstOrNull { it.dqId == this.artifact.objectId }
+            ?.activities?.firstOrNull { it.dqId == this.artifact.activity }
             ?.endpoint
             ?: throw RuntimeException("Something went very wrong")
     }

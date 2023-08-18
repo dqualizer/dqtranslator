@@ -14,7 +14,7 @@ plugins {
 	id("maven-publish")
 }
 
-group = "de.dqualizer"
+group = "io.github.dqualizer"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 

@@ -1,11 +1,10 @@
-package de.dqualizer.dqtranslator
+package io.github.dqualizer.dqtranslator
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 
-@SpringBootApplication
-@ComponentScan("de.dqualizer.dqtranslator", "io.github.dqualizer.dqlang")
+@SpringBootApplication(scanBasePackages = ["io.github.dqualizer"])
 class DqtranslatorApplication
 
 fun main(args: Array<String>) {

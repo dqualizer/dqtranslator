@@ -1,4 +1,4 @@
-package de.dqualizer.dqtranslator.translation
+package io.github.dqualizer.dqtranslator.translation
 
 import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
 import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration

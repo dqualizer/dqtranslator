@@ -1,7 +1,7 @@
-package de.dqualizer.dqtranslator.messaging
+package io.github.dqualizer.dqtranslator.messaging
 
-import de.dqualizer.dqtranslator.translation.RQATranslationChain
-import de.dqualizer.dqtranslator.translation.RQATranslator
+import io.github.dqualizer.dqtranslator.translation.RQATranslationChain
+import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
 import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
 import org.slf4j.LoggerFactory
@@ -21,7 +21,7 @@ class RqaDefinitionReceiver(
 
     @RabbitListener(queues = ["\${dqualizer.messaging.queues.rqaDefinitionReceiverQueue.name}"])
     fun receive(@Payload rqaDefinition: RuntimeQualityAnalysisDefintion, @Headers headers: MessageHeaders) {
-        log.info("Received an RQA Definition")
+        log.debug("Received an RQA Definition: {}", rqaDefinition)
         val rqaConfiguration = RQATranslationChain()
             .chain(rqaTranslators)
             .chain { _, configuration -> configuration }
