@@ -1,7 +1,8 @@
 package io.github.dqualizer.dqtranslator.mapping
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.github.dqualizer.dqlang.types.domain_architecture_mapping.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.
+domain_architecture_mapping.DomainArchitectureMapping
 import io.github.dqualizer.dqlang.types.domain_architecture_mapping.Object
 import io.github.dqualizer.dqtranslator.ContextNotFoundException
 import org.slf4j.LoggerFactory

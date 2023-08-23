@@ -1,17 +1,17 @@
 package io.github.dqualizer.dqtranslator.translation.translators
 
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.ModeledLoadTest
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
+import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
+import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.dam.Endpoint
+import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
+import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTest
+import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
+import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
+import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.ModeledLoadTest
 import io.github.dqualizer.dqtranslator.EnvironmentNotFoundException
 import io.github.dqualizer.dqtranslator.mapping.MappingService
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import io.github.dqualizer.dqtranslator.translation.TranslationService
-import io.github.dqualizer.dqlang.types.domain_architecture_mapping.DomainArchitectureMapping
-import io.github.dqualizer.dqlang.types.domain_architecture_mapping.Endpoint
-import io.github.dqualizer.dqlang.types.load_test_configuration.LoadTest
-import io.github.dqualizer.dqlang.types.load_test_configuration.LoadTestConfiguration
-import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
-import io.github.dqualizer.dqlang.types.rqa_definition.Artifact
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -21,76 +21,73 @@ class LoadTestTranslator(
 ) : RQATranslator {
     private val log = LoggerFactory.getLogger(TranslationService::class.java)
 
-    override fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion, target: RQAConfiguration): RQAConfiguration {
-        if(rqaDefinition.rqa.loadtests.size <= 0){
+    override fun translate(rqaDef: RuntimeQualityAnalysisDefinition, rqaConfig: RQAConfiguration): RQAConfiguration {
+        if (rqaDef.runtimeQualityAnalysis.loadtests.size <= 0) {
             log.debug("No loadtests found in RQA Definition")
-            return target
+            return rqaConfig
         }
 
-        val mapping = mappingService.getMappingByContext(rqaDefinition.context)
+        val mapping = mappingService.getMappingByContext(rqaDef.domainId)
 
-        val loadTestSpecs = rqaDefinition.rqa.loadtests
+        val loadTestSpecs = rqaDef.runtimeQualityAnalysis.loadtests
         val nodes = loadTestSpecs.filter { it.artifact.isNode() }
         val edges = loadTestSpecs.filter { it.artifact.isEdge() }
 
         val loadTestConfigurations =
             nodes.map { nodeToLoadTests(it, mapping) }.flatten() + edges.map { edgeToLoadTest(it, mapping) }
 
-        target.loadConfiguration = LoadTestConfiguration(
-            rqaDefinition.version,
-            rqaDefinition.context,
-            rqaDefinition.environment,
-            mapping.getEndpoint(rqaDefinition.environment),
+        rqaConfig.loadConfiguration = LoadTestConfiguration(
+            rqaDef.version,
+            rqaDef.domainId,
+            rqaDef.environment.toString(),
+            mapping.getEndpoint(rqaDef.environment),
             loadTestConfigurations.toMutableSet()
         )
 
-        return target
+        return rqaConfig
     }
 
-    fun nodeToLoadTests(loadtestSpec: ModeledLoadTest, mapping: DomainArchitectureMapping): List<LoadTest> {
-        return mapping.objects.firstOrNull { it.dqId == loadtestSpec.artifact.`object` }
+    fun nodeToLoadTests(loadtestModel: ModeledLoadTest, mapping: DomainArchitectureMapping): List<LoadTest> {
+        return mapping.systems.firstOrNull { it.id == loadtestModel.artifact.systemId }
             ?.activities?.map { activity -> activity.endpoint }?.map {
                 LoadTest(
-                    loadtestSpec.artifact,
-                    loadtestSpec.description,
-                    loadtestSpec.stimulus,
-                    loadtestSpec.responseMeasure,
+                    loadtestModel.artifact,
+                    loadtestModel.description,
+                    loadtestModel.stimulus,
+                    loadtestModel.responseMeasures,
                     it
                 )
             }
             ?: throw RuntimeException("Something went very wrong")
     }
 
-    fun edgeToLoadTest(loadtestSpec: ModeledLoadTest, mapping: DomainArchitectureMapping): LoadTest {
+    fun edgeToLoadTest(loadtestModel: ModeledLoadTest, mapping: DomainArchitectureMapping): LoadTest {
         return LoadTest(
-            loadtestSpec.artifact,
-            loadtestSpec.description,
-            loadtestSpec.stimulus,
-            loadtestSpec.responseMeasure,
-            loadtestSpec.getEndpoint(mapping)
+            loadtestModel.artifact,
+            loadtestModel.description,
+            loadtestModel.stimulus,
+            loadtestModel.responseMeasures,
+            loadtestModel.getEndpoint(mapping)
         )
     }
 
     private fun ModeledLoadTest.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
-        return mapping.objects.firstOrNull { it.dqId == this.artifact.objectId }
-            ?.activities?.firstOrNull { it.dqId == this.artifact.activity }
+        return mapping.systems.firstOrNull { it.id == this.artifact.systemId }
+            ?.activities?.firstOrNull { it.id == this.artifact.activityId }
             ?.endpoint
             ?: throw RuntimeException("Something went very wrong")
     }
 
     private fun DomainArchitectureMapping.getEndpoint(environment: String): String {
-        return this.serverInfo.firstOrNull { it.environment == environment }?.host
+        return this.serverInfos.firstOrNull { it.environment == environment }?.host
             ?: throw EnvironmentNotFoundException(environment)
     }
 
     private fun Artifact.isNode(): Boolean {
-        return this.activity == null
+        return this.activityId == null
     }
 
     private fun Artifact.isEdge(): Boolean {
-        return this.activity != null
+        return this.activityId != null
     }
-
-    val Artifact.objectId: String
-        get() = `object`
 }
