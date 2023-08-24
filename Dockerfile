@@ -61,9 +61,12 @@ FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre-alpine
 WORKDIR /app
 
 # Copy the jar file from the build stage
-COPY --from=build-executor /app/build/libs/*.jar /app/app.jar
+COPY --from=build-executor /app/build/libs/*.jar /app/dqtransaltor.jar
+
+RUN wget -O ./opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.26.0/opentelemetry-javaagent.jar
+
 
 EXPOSE 8080
 
 # Run the jar file
-CMD ["java", "-jar", "app.jar"]
+CMD ["java","-javaagent:opentelemetry-javaagent.jar", "-jar", "dqtransaltor.jar"]
