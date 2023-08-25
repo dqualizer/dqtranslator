@@ -1,12 +1,10 @@
 package io.github.dqualizer.dqtranslator.messaging
 
+import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqtranslator.translation.RQATranslationChain
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
-import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.AmqpRejectAndDontRequeueException
-import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.handler.annotation.Headers
@@ -21,7 +19,7 @@ class RqaDefinitionReceiver(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @RabbitListener(queues = ["\${dqualizer.messaging.queues.rqaDefinitionReceiverQueue.name}"])
-    fun receive(@Payload rqaDefinition: RuntimeQualityAnalysisDefintion, @Headers headers: MessageHeaders) {
+    fun receive(@Payload rqaDefinition: RuntimeQualityAnalysisDefinition, @Headers headers: MessageHeaders) {
         log.debug("Received an RQA Definition: {}", rqaDefinition)
 
         try {
@@ -32,8 +30,7 @@ class RqaDefinitionReceiver(
 
             //publish result
             rqaConfigurationProducer.produce(rqaConfiguration, headers)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             log.error("Failed to translate RQA Definition: {}", rqaDefinition, e)
             throw AmqpRejectAndDontRequeueException(e)
         }

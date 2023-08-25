@@ -4,5 +4,5 @@ import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 
 
 interface MappingService {
-    fun getMappingByContext(context: String): DomainArchitectureMapping
+    fun getDAMByContext(context: String): DomainArchitectureMapping
 }

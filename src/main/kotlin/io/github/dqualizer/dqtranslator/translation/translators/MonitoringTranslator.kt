@@ -1,9 +1,9 @@
 package io.github.dqualizer.dqtranslator.translation.translators
 
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
+import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.instrumentation.*
-import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
-import io.github.dqualizer.dqlang.types.runtimequalityanalysisdefinition.MeasurementType
+import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
+import io.github.dqualizer.dqlang.types.rqa.definition.MeasurementType
 import io.github.dqualizer.dqtranslator.ServiceNotFoundException
 import io.github.dqualizer.dqtranslator.mapping.MappingServiceImpl
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
@@ -29,23 +29,23 @@ class MonitoringTranslator(
     }
 
 
-    override fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion, target: RQAConfiguration): RQAConfiguration {
-        if(rqaDefinition.rqa.monitoring.size <= 0){
+    override fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition, target: RQAConfiguration): RQAConfiguration {
+        if(rqaDefinition.runtimeQualityAnalysis.monitoring.size <= 0){
             log.debug("No monitoring definitions found in RQA Definition")
             return target
         }
 
 
-        val dam = mappingService.getMappingByContext(rqaDefinition.context)
-        val services = dam.system.services.associateBy({ it.name }, { it })
+        val dam = mappingService.getDAMByContext(rqaDefinition.domainId)
+        val services = dam.softwareSystem.services.associateBy({ it.name }, { it })
 
 
         val serviceInstrumentes = mutableMapOf<String, MutableList<Instrument>>()
-        val serviceMonitoringFrameworks = dam.system.services.associateBy({ it.name }, { it.instrumentationFramework })
+        val serviceMonitoringFrameworks = dam.softwareSystem.services.associateBy({ it.name }, { it.instrumentationFramework })
 
-        for (monitoring in rqaDefinition.rqa.monitoring) {
+        for (monitoring in rqaDefinition.runtimeQualityAnalysis.monitoring) {
 
-            val technicalEntity = dam.objects.find { it.dqId == monitoring.target }!!
+            val technicalEntity = dam.systems.find { it.id == monitoring.target }!!
             val naming = mappingService.resolveName(technicalEntity.operationId)
             val serviceName = naming.serviceId.orElseThrow { ServiceNotFoundException(technicalEntity.operationId) }
 
@@ -65,7 +65,7 @@ class MonitoringTranslator(
                 throw IllegalArgumentException("Instrument name $instrumentName does not match the opentelemetry spec.")
 
             val instrument = Instrument(
-                listOf(),
+                setOf(),
                 sanitizedName,
                 instrumentName,
                 instrumentType,

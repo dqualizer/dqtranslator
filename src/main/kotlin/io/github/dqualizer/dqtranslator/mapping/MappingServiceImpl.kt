@@ -1,13 +1,10 @@
 package io.github.dqualizer.dqtranslator.mapping
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.github.dqualizer.dqlang.types.
-domain_architecture_mapping.DomainArchitectureMapping
-import io.github.dqualizer.dqlang.types.domain_architecture_mapping.Object
+import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 import io.github.dqualizer.dqtranslator.ContextNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.support.ResourcePatternUtils
 import org.springframework.stereotype.Service
@@ -23,7 +20,7 @@ class MappingServiceImpl(
     @Value("\${dqualizer.mappingDirectory}")
     private lateinit var mappingDirectory: String
 
-    override fun getMappingByContext(context: String): DomainArchitectureMapping {
+    override fun getDAMByContext(context: String): DomainArchitectureMapping {
         log.info("Trying to load context=$context from directory=classpath:$mappingDirectory")
 
         return ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
@@ -33,10 +30,16 @@ class MappingServiceImpl(
             .firstOrNull { it.context == context } ?: throw ContextNotFoundException(context)
     }
 
-    fun resolveDQIDToTechnicalContext(context: String, id: String): Optional<Object> {
-        val dam = getMappingByContext(context)
+    fun resolveDQIDToTechnicalContext(context: String, id: String): Optional<Any> {
+        val dam = getDAMByContext(context)
 
-        dam.objects.find { it.dqId == id }?.let {
+        dam.systems.find { it.id == id }?.let {
+            return Optional.of(it)
+        }
+        dam.actors.find { it.id == id }?.let {
+            return Optional.of(it)
+        }
+        dam.serverInfos.find { it.id == id }?.let {
             return Optional.of(it)
         }
 

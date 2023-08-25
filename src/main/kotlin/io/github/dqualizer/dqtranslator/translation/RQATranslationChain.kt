@@ -1,8 +1,7 @@
 package io.github.dqualizer.dqtranslator.translation
 
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
-import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
-
+import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
+import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
 
 class RQATranslationChain {
 
@@ -18,7 +17,7 @@ class RQATranslationChain {
         return this
     }
 
-    fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion): RQAConfiguration {
+    fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition): RQAConfiguration {
         var loadTestConfig = RQAConfiguration()
         for (translator in translators) {
             loadTestConfig = translator.translate(rqaDefinition, loadTestConfig)

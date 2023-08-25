@@ -27,11 +27,11 @@ class LoadTestTranslator(
             return rqaConfig
         }
 
-        val mapping = mappingService.getMappingByContext(rqaDef.domainId)
+        val mapping = mappingService.getDAMByContext(rqaDef.domainId)
 
         val loadTestSpecs = rqaDef.runtimeQualityAnalysis.loadtests
-        val nodes = loadTestSpecs.filter { it.artifact.isNode() }
-        val edges = loadTestSpecs.filter { it.artifact.isEdge() }
+        val nodes = loadTestSpecs.filter { it.artifact.isNode }
+        val edges = loadTestSpecs.filter { it.artifact.isEdge }
 
         val loadTestConfigurations =
             nodes.map { nodeToLoadTests(it, mapping) }.flatten() + edges.map { edgeToLoadTest(it, mapping) }
@@ -40,7 +40,7 @@ class LoadTestTranslator(
             rqaDef.version,
             rqaDef.domainId,
             rqaDef.environment.toString(),
-            mapping.getEndpoint(rqaDef.environment),
+            mapping.getEndpoint(rqaDef.environment.toString()),
             loadTestConfigurations.toMutableSet()
         )
 

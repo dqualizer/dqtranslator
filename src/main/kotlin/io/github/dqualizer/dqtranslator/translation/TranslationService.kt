@@ -1,8 +1,9 @@
 package io.github.dqualizer.dqtranslator.translation
 
-import io.github.dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
-import io.github.dqualizer.dqlang.types.load_test_configuration.LoadTestConfiguration
+import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
+import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
+
 
 interface TranslationService {
-    fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion): LoadTestConfiguration
+    fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition): LoadTestConfiguration
 }

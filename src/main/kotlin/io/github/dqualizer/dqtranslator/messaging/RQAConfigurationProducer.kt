@@ -1,6 +1,6 @@
 package io.github.dqualizer.dqtranslator.messaging
 
-import io.github.dqualizer.dqlang.types.rqa.RQAConfiguration
+import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
 import org.springframework.amqp.core.MessageProperties
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.support.converter.MessageConverter
