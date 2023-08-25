@@ -65,7 +65,7 @@ class MonitoringTranslator(
                 throw IllegalArgumentException("Instrument name $instrumentName does not match the opentelemetry spec.")
 
             val instrument = Instrument(
-                setOf(),
+                listOf(monitoring.id),
                 sanitizedName,
                 instrumentName,
                 instrumentType,
