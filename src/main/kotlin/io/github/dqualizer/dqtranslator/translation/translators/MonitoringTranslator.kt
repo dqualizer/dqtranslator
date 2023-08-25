@@ -1,9 +1,11 @@
 package io.github.dqualizer.dqtranslator.translation.translators
 
-import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
-import io.github.dqualizer.dqlang.types.instrumentation.*
+import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
+import io.github.dqualizer.dqlang.types.dam.instrumentation.*
 import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
-import io.github.dqualizer.dqlang.types.rqa.definition.MeasurementType
+import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.MonitoringConfiguration
+import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.ServiceMonitoringConfiguration
+import io.github.dqualizer.dqlang.types.rqa.def.MeasurementType
 import io.github.dqualizer.dqtranslator.ServiceNotFoundException
 import io.github.dqualizer.dqtranslator.mapping.MappingServiceImpl
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
@@ -30,7 +32,7 @@ class MonitoringTranslator(
 
 
     override fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition, target: RQAConfiguration): RQAConfiguration {
-        if(rqaDefinition.runtimeQualityAnalysis.monitoring.size <= 0){
+        if(rqaDefinition.runtimeQualityAnalysis.monitoringDefinition.size <= 0){
             log.debug("No monitoring definitions found in RQA Definition")
             return target
         }
@@ -43,7 +45,7 @@ class MonitoringTranslator(
         val serviceInstrumentes = mutableMapOf<String, MutableList<Instrument>>()
         val serviceMonitoringFrameworks = dam.softwareSystem.services.associateBy({ it.name }, { it.instrumentationFramework })
 
-        for (monitoring in rqaDefinition.runtimeQualityAnalysis.monitoring) {
+        for (monitoring in rqaDefinition.runtimeQualityAnalysis.monitoringDefinition) {
 
             val technicalEntity = dam.systems.find { it.id == monitoring.target }!!
             val naming = mappingService.resolveName(technicalEntity.operationId)

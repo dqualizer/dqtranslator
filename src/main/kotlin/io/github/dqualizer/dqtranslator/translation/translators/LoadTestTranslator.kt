@@ -1,13 +1,13 @@
 package io.github.dqualizer.dqtranslator.translation.translators
 
-import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 import io.github.dqualizer.dqlang.types.dam.Endpoint
 import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
-import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTest
+import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestArtifact
 import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
 import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
-import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.ModeledLoadTest
+import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.LoadTestDefinition
 import io.github.dqualizer.dqtranslator.EnvironmentNotFoundException
 import io.github.dqualizer.dqtranslator.mapping.MappingService
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
@@ -47,10 +47,10 @@ class LoadTestTranslator(
         return rqaConfig
     }
 
-    fun nodeToLoadTests(loadtestModel: ModeledLoadTest, mapping: DomainArchitectureMapping): List<LoadTest> {
+    fun nodeToLoadTests(loadtestModel: LoadTestDefinition, mapping: DomainArchitectureMapping): List<LoadTestArtifact> {
         return mapping.systems.firstOrNull { it.id == loadtestModel.artifact.systemId }
             ?.activities?.map { activity -> activity.endpoint }?.map {
-                LoadTest(
+                LoadTestArtifact(
                     loadtestModel.artifact,
                     loadtestModel.description,
                     loadtestModel.stimulus,
@@ -61,8 +61,8 @@ class LoadTestTranslator(
             ?: throw RuntimeException("Something went very wrong")
     }
 
-    fun edgeToLoadTest(loadtestModel: ModeledLoadTest, mapping: DomainArchitectureMapping): LoadTest {
-        return LoadTest(
+    fun edgeToLoadTest(loadtestModel: LoadTestDefinition, mapping: DomainArchitectureMapping): LoadTestArtifact {
+        return LoadTestArtifact(
             loadtestModel.artifact,
             loadtestModel.description,
             loadtestModel.stimulus,
@@ -71,7 +71,7 @@ class LoadTestTranslator(
         )
     }
 
-    private fun ModeledLoadTest.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
+    private fun LoadTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
         return mapping.systems.firstOrNull { it.id == this.artifact.systemId }
             ?.activities?.firstOrNull { it.id == this.artifact.activityId }
             ?.endpoint

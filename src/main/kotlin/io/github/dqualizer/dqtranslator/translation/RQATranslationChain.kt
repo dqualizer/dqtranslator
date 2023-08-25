@@ -1,7 +1,7 @@
 package io.github.dqualizer.dqtranslator.translation
 
-import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
+import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 
 class RQATranslationChain {
 

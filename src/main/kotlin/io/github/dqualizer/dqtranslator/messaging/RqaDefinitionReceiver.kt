@@ -1,6 +1,7 @@
 package io.github.dqualizer.dqtranslator.messaging
 
-import io.github.dqualizer.dqlang.draft.rqaDefinition.RuntimeQualityAnalysisDefinition
+
+import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqtranslator.translation.RQATranslationChain
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import org.slf4j.LoggerFactory
