@@ -25,6 +25,11 @@ class MappingServiceImpl(
     @Value("\${dqualizer.mappingDirectory}")
     private lateinit var mappingDirectory: String
 
+    @Value("\${dqualizer.dqapi.host}")
+    private lateinit var dqApiHost : String;
+    @Value("\${dqualizer.dqapi.port}")
+    private lateinit var dqApiPort : String;
+
     val client = HttpClient {
         install(Logging)
     };
@@ -44,7 +49,7 @@ class MappingServiceImpl(
         var result: DomainArchitectureMapping? = null
 
         runBlocking {
-            val damResponse = client.get("http://localhost:8099/api/v1/dam/$id")
+            val damResponse = client.get("http://${dqApiHost}:${dqApiPort}/api/v1/dam/$id")
             result = objectMapper.readValue(damResponse.bodyAsText(), DomainArchitectureMapping::class.java)
             log.info(damResponse.bodyAsText());
         }

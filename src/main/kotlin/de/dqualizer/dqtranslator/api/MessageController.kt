@@ -27,6 +27,7 @@ import io.ktor.http.*
 import io.ktor.util.Identity.decode
 import io.ktor.util.Identity.encode
 import kotlinx.coroutines.runBlocking
+import org.springframework.beans.factory.annotation.Value
 
 
 @RestController
@@ -40,13 +41,18 @@ class MessageController (private val translationService: TranslationService,
         install(Logging)
     };
 
+    @Value("\${dqualizer.dqapi.host}")
+    private lateinit var dqApiHost : String;
+    @Value("\${dqualizer.dqapi.port}")
+    private lateinit var dqApiPort : String;
+
     @PostMapping("/translate/{rqaId}")
     fun index(@PathVariable rqaId: String) {
         log.info("RqaDefinitionReceiver received $rqaId. Searching for the rqa-def now...")
         val rqaResponse : HttpResponse
 
         runBlocking {
-            rqaResponse = client.get("http://localhost:8099/api/v1/rqa-definition/$rqaId")
+            rqaResponse = client.get("http://${dqApiHost}:${dqApiPort}/api/v1/rqa-definition/$rqaId")
             val rqaDef = objectMapper.readValue(rqaResponse.bodyAsText(), RuntimeQualityAnalysisDefinition::class.java)
             val loadTestConfig = translationService.translate(rqaDef)
             log.info(loadTestConfig.loadTestArtifacts.toString())
