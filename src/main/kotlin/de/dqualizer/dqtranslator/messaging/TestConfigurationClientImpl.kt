@@ -18,7 +18,7 @@ class TestConfigurationClientImpl(
     override fun queueLoadTestConfiguration(loadTestConfiguration: LoadTestConfiguration) {
         rabbitTemplate.convertAndSend(
                 loadTestExchangeName,
-                "post",
+                "GET",
                 loadTestConfiguration
         )
         log.info("Sent loadTestConfiguration=$loadTestConfiguration to queue")
