@@ -49,12 +49,6 @@ configurations {
 
 repositories {
 	mavenCentral()
-	maven("https://maven.pkg.github.com/dqualizer/dqlang") {
-		credentials {
-			username = "levinkerschberger"
-			password = "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"
-		}
-	}
 }
 
 dependencies {
