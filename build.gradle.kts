@@ -58,7 +58,7 @@ dependencies {
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-	implementation("io.github.dqualizer:dqlang:2.0.9")
+	implementation("io.github.dqualizer:dqlang:2.0.12")
 	implementation("io.ktor:ktor-client-core:2.3.3")
 	implementation("io.ktor:ktor-client-cio:2.3.3")
 	implementation("io.ktor:ktor-client-logging:2.3.3")
