@@ -1,7 +1,8 @@
 package de.dqualizer.dqtranslator.messaging
 
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.loadtest.LoadTestConfig
+import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
+
 
 interface TestConfigurationClient {
-    fun queueLoadTestConfiguration(loadTestConfiguration: LoadTestConfig)
+    fun queueLoadTestConfiguration(loadTestConfiguration: LoadTestConfiguration)
 }

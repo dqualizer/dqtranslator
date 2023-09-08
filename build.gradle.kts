@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "3.0.5"
 	id("io.spring.dependency-management") version "1.1.0"
-	kotlin("jvm") version "1.7.22"
-	kotlin("plugin.spring") version "1.7.22"
-	kotlin("plugin.serialization") version "1.7.22"
+	kotlin("jvm") version "1.9.0"
+	kotlin("plugin.spring") version "1.9.0"
+	kotlin("plugin.serialization") version "1.9.0"
 
 	id("net.researchgate.release") version "3.0.2"
 	id("maven-publish")
@@ -52,7 +52,7 @@ repositories {
 	maven("https://maven.pkg.github.com/dqualizer/dqlang") {
 		credentials {
 			username = "levinkerschberger"
-			password = "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"
+			password = "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"
 		}
 	}
 }
@@ -64,7 +64,7 @@ dependencies {
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-	implementation("io.github.dqualizer:dqlang:1.0.5-SNAPSHOT")
+	implementation("io.github.dqualizer:dqlang:2.0.9")
 	implementation("io.ktor:ktor-client-core:2.3.3")
 	implementation("io.ktor:ktor-client-cio:2.3.3")
 	implementation("io.ktor:ktor-client-logging:2.3.3")

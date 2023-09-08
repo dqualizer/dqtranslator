@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.cfg.JsonNodeFeature
 import de.dqualizer.dqtranslator.messaging.RqaDefinitionReceiver
 import de.dqualizer.dqtranslator.messaging.TestConfigurationClient
 import de.dqualizer.dqtranslator.translation.TranslationService
-import io.github.dqualizer.dqlang.draft.rqa.RqaDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
+
+
 import org.slf4j.LoggerFactory
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.web.bind.annotation.GetMapping
@@ -45,8 +47,10 @@ class MessageController (private val translationService: TranslationService,
 
         runBlocking {
             rqaResponse = client.get("http://localhost:8099/api/v1/rqa-definition/$rqaId")
-            val rqaDef = objectMapper.readValue(rqaResponse.bodyAsText(), RqaDefinition::class.java)
+            val rqaDef = objectMapper.readValue(rqaResponse.bodyAsText(), RuntimeQualityAnalysisDefinition::class.java)
             val loadTestConfig = translationService.translate(rqaDef)
+            log.info(loadTestConfig.loadTestArtifacts.toString())
+            loadTestConfigurationClient.queueLoadTestConfiguration(loadTestConfig)
         }
 
 
