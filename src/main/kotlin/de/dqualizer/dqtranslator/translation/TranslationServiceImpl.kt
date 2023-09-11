@@ -27,11 +27,7 @@ class TranslationServiceImpl(
         val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadtests
 
         // Artifact will always be an Edge...
-        val systems = loadTestDefinition.filter { it.artifact.isNode }
-        val activities = loadTestDefinition.filter { it.artifact.isEdge }
-
-        log.info(systems.toString())
-        log.info(loadTestDefinition.toString())
+        val (systems, activities) = loadTestDefinition.partition { it.artifact.activityId == null }
 
         val loadTestConfigurations = systems.map { nodeToLoadTests(it, mapping) }.flatten() + activities.map { edgeToLoadTest(it, mapping) }
 
@@ -82,7 +78,7 @@ class TranslationServiceImpl(
     }
 
     private fun Artifact.isEdge(): Boolean {
-        return this.activityId != null
+        return this.systemId != null
     }
 
     val Artifact.systemId: String
