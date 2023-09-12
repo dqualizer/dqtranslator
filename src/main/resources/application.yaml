@@ -5,11 +5,13 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
 dqualizer:
-  rabbitmq:
-    rqaDefinitionQueue: 'modeling'
-    rqaExchange: 'modeler-translator'
-    loadtestQueue: 'loadtest'
-    loadtestExchange: 'translator-loadtest'
+  messaging:
+    queues:
+      rqaConfigurationProducerQueue:
+        name: 'rqaConfigurationProducer'
+    exchanges:
+      rqaConfigurationExchange:
+        name: "rqaConfiguration"
   dqapi:
     host: 'localhost'
     port: '8099'

@@ -30,7 +30,9 @@ class TranslationServiceImpl(
         val (systems, activities) = loadTestDefinition.partition { it.artifact.activityId == null }
 
         val loadTestConfigurations = systems.map { nodeToLoadTests(it, mapping) }.flatten() + activities.map { edgeToLoadTest(it, mapping) }
-
+        loadTestConfigurations.forEach {loadTestConfiguration ->
+            loadTestConfiguration.endpoint.payloads = ArrayList()
+            }
         val loadtestConfiguration = LoadTestConfiguration(
                 rqaDefinition.version,
                 rqaDefinition.context,

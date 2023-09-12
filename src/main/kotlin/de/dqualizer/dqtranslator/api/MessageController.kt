@@ -2,8 +2,7 @@ package de.dqualizer.dqtranslator.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.cfg.JsonNodeFeature
-import de.dqualizer.dqtranslator.messaging.RqaDefinitionReceiver
-import de.dqualizer.dqtranslator.messaging.TestConfigurationClient
+import de.dqualizer.dqtranslator.messaging.RQAConfigurationProducer
 import de.dqualizer.dqtranslator.translation.TranslationService
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 
@@ -33,9 +32,9 @@ import org.springframework.beans.factory.annotation.Value
 @RestController
 @CrossOrigin(origins = ["*"])
 class MessageController (private val translationService: TranslationService,
-                         private val loadTestConfigurationClient: TestConfigurationClient,
+                         private val rqaConfigurationProducer: RQAConfigurationProducer,
                          private val objectMapper: ObjectMapper) {
-    private val log = LoggerFactory.getLogger(RqaDefinitionReceiver::class.java)
+    private val log = LoggerFactory.getLogger(MessageController::class.java)
 
     val client = HttpClient {
         install(Logging)
@@ -56,7 +55,7 @@ class MessageController (private val translationService: TranslationService,
             val rqaDef = objectMapper.readValue(rqaResponse.bodyAsText(), RuntimeQualityAnalysisDefinition::class.java)
             val loadTestConfig = translationService.translate(rqaDef)
             log.info(loadTestConfig.loadTestArtifacts.toString())
-            loadTestConfigurationClient.queueLoadTestConfiguration(loadTestConfig)
+            rqaConfigurationProducer.produce(loadTestConfig)
         }
 
 
