@@ -11,7 +11,7 @@ import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.ResilienceT
 import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.LoadTestDefinition
-import io.github.dqualizer.dqlang.types.rqa.definition.resilience.ResilienceTestDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.ResilienceTestDefinition
 
 
 import org.slf4j.LoggerFactory
