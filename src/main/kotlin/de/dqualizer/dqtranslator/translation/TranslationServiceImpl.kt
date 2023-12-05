@@ -6,9 +6,12 @@ import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 import io.github.dqualizer.dqlang.types.dam.Endpoint
 import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestArtifact
 import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
+import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.ResilienceTestArtifact
+import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.ResilienceTestConfiguration
 import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.LoadTestDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.resilience.ResilienceTestDefinition
 
 
 import org.slf4j.LoggerFactory
@@ -25,11 +28,15 @@ class TranslationServiceImpl(
         val mapping = mappingService.getMappingById(rqaDefinition.domainId)
 
         val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadtests
+        val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
 
         // Artifact will always be an Edge...
-        val (systems, activities) = loadTestDefinition.partition { it.artifact.activityId == null }
+        val (loadTestSystems, loadTestActivities) = loadTestDefinition.partition { it.artifact.activityId == null }
+        val (resilienceTestSystems, resilienceTestActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
 
-        val loadTestConfigurations = systems.map { nodeToLoadTests(it, mapping) }.flatten() + activities.map { edgeToLoadTest(it, mapping) }
+        val loadTestConfigurations = loadTestSystems.map { nodeToLoadTests(it, mapping) }.flatten() + loadTestActivities.map { edgeToLoadTest(it, mapping) }
+        val resilienceTestConfigurations = resilienceTestSystems.map { nodeToResilienceTest(it, mapping) }.flatten() + resilienceTestActivities.map { edgeToResilienceTest(it, mapping) }
+
         loadTestConfigurations.forEach {loadTestConfiguration ->
             loadTestConfiguration.endpoint.payloads = ArrayList()
             }
@@ -40,8 +47,17 @@ class TranslationServiceImpl(
                 mapping.getEndpoint(rqaDefinition.environment.toString()),
                 loadTestConfigurations.toHashSet()
         )
+
+        val resilienceTestConfiguration = ResilienceTestConfiguration(
+                rqaDefinition.version,
+                rqaDefinition.context,
+                rqaDefinition.environment.toString(),
+                mapping.getEndpoint(rqaDefinition.environment.toString()),
+                resilienceTestConfigurations.toHashSet()
+        )
         log.info(loadtestConfiguration.toString())
-        return loadtestConfiguration
+        log.info(resilienceTestConfiguration.toString())
+        return loadtestConfiguration;
 
     }
 
@@ -49,6 +65,14 @@ class TranslationServiceImpl(
         return mapping.systems.firstOrNull { it.id == loadtestDefinition.artifact.systemId }
                 ?.activities?.map { activity -> activity.endpoint }
                 ?.map { LoadTestArtifact(loadtestDefinition.artifact, loadtestDefinition.description, loadtestDefinition.stimulus, loadtestDefinition.responseMeasures, it) }
+                ?: throw RuntimeException("Something went very wrong")
+
+    }
+
+    fun nodeToResilienceTest(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): List<ResilienceTestArtifact> {
+        return mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId }
+                ?.activities?.map { activity -> activity.endpoint }
+                ?.map { ResilienceTestArtifact(resilienceTestDefinition.artifact, resilienceTestDefinition.description, resilienceTestDefinition.stimulus, resilienceTestDefinition.responseMeasures, it) }
                 ?: throw RuntimeException("Something went very wrong")
 
     }
@@ -63,7 +87,24 @@ class TranslationServiceImpl(
                 )
     }
 
+    fun edgeToResilienceTest(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): ResilienceTestArtifact {
+        return ResilienceTestArtifact(
+                resilienceTestDefinition.artifact,
+                resilienceTestDefinition.description,
+                resilienceTestDefinition.stimulus,
+                resilienceTestDefinition.responseMeasures,
+                resilienceTestDefinition.getEndpoint(mapping)
+        )
+    }
+
     private fun LoadTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
+        return mapping.systems.firstOrNull { it.id == this.artifact.systemId }
+                ?.activities?.firstOrNull { it.id == this.artifact.activityId }
+                ?.endpoint
+                ?: throw RuntimeException("Something went very wrong")
+    }
+
+    private fun ResilienceTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
         return mapping.systems.firstOrNull { it.id == this.artifact.systemId }
                 ?.activities?.firstOrNull { it.id == this.artifact.activityId }
                 ?.endpoint
