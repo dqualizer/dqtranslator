@@ -24,23 +24,19 @@ class TranslationServiceImpl(
 ) : TranslationService {
     private val log = LoggerFactory.getLogger(TranslationService::class.java)
 
-    override fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition): LoadTestConfiguration {
+    override fun translateRqaDefToLoadTestConfig(rqaDefinition: RuntimeQualityAnalysisDefinition): LoadTestConfiguration {
         // Get domain architecture Mapping from Api by domain_id
         val domainArchitectureMapping = mappingService.getMappingById(rqaDefinition.domainId)
-
         val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadtests
-        val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
 
         // Artifact will always be an Edge...
         val (loadTestsForSystems, loadTestsForActivities) = loadTestDefinition.partition { it.artifact.activityId == null }
-        val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
-
         val loadTestConfigurations = loadTestsForSystems.map { nodeToLoadTest(it, domainArchitectureMapping) }.flatten() + loadTestsForActivities.map { edgeToLoadTest(it, domainArchitectureMapping) }
-        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceDefinition(it, domainArchitectureMapping) }// + resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
 
         loadTestConfigurations.forEach {loadTestConfiguration ->
             loadTestConfiguration.endpoint.payloads = ArrayList()
             }
+
         val loadtestConfiguration = LoadTestConfiguration(
                 rqaDefinition.version,
                 rqaDefinition.context,
@@ -49,16 +45,31 @@ class TranslationServiceImpl(
                 loadTestConfigurations.toHashSet()
         )
 
+        log.info(loadtestConfiguration.toString())
+        log.info(loadtestConfiguration.toString())
+        return loadtestConfiguration;
+
+    }
+
+
+    override fun translateRqaDefToResilienceTestConfig(rqaDefinition: RuntimeQualityAnalysisDefinition): ResilienceTestConfiguration {
+        // Get domain architecture Mapping from Api by domain_id
+        val domainArchitectureMapping = mappingService.getMappingById(rqaDefinition.domainId)
+
+        val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
+        val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
+        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceDefinition(it, domainArchitectureMapping) }// + resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
+
         val resilienceTestConfiguration = ResilienceTestConfiguration(
                 rqaDefinition.version,
                 rqaDefinition.context,
                 rqaDefinition.environment.toString(),
                 enrichedResilienceDefinitions.toHashSet()
         )
-        log.info(loadtestConfiguration.toString())
-        log.info(resilienceTestConfiguration.toString())
-        return loadtestConfiguration;
 
+        log.info(resilienceTestConfiguration.toString())
+        log.info(resilienceTestConfiguration.toString())
+        return resilienceTestConfiguration;
     }
 
     /*
