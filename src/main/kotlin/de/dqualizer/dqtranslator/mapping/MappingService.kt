@@ -7,4 +7,6 @@ interface MappingService {
     fun getMappingByContext(context: String): DomainArchitectureMapping
 
     fun getMappingById(id: String): DomainArchitectureMapping
+
+    fun getMappingByIdHardcoded(id: String): DomainArchitectureMapping
 }
