@@ -3,7 +3,14 @@ package de.dqualizer.dqtranslator.api
 import com.fasterxml.jackson.databind.ObjectMapper
 import de.dqualizer.dqtranslator.messaging.RQAConfigurationProducer
 import de.dqualizer.dqtranslator.translation.TranslationService
+import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
+import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysis
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.enums.Environment
+import io.github.dqualizer.dqlang.types.rqa.definition.enums.Satisfaction
+import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.ResilienceResponseMeasures
+import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.ResilienceTestDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.stimulus.UnavailabilityStimulus
 
 
 import org.slf4j.LoggerFactory
@@ -48,12 +55,33 @@ class MessageController (private val translationService: TranslationService,
             val resilienceTestConfig = translationService.translateRqaDefToResilienceTestConfig(rqaDef)
             log.info(loadTestConfig.loadTestArtifacts.toString())
             log.info(resilienceTestConfig.enrichedResilienceTestDefinitions.toString())
-            rqaConfigurationProducer.produce(loadTestConfig)
+            rqaConfigurationProducer.produceLoadtestConfig(loadTestConfig)
            // rqaConfigurationProducer.produce(resilienceTestConfig)
 
         }
+    }
 
+    @PostMapping("/translate/hardcoded")
+    fun translateHardCodedRqaDefinition() {
+        log.info("RqaDefinitionReceiver received order to translate hardcoded RQA Definition. Starting now...")
 
+        val artifact = Artifact("MyComputer", null)
+        val stimulus = UnavailabilityStimulus("Unavailability", 100)
+        val responseMeasures = ResilienceResponseMeasures(Satisfaction.TOLERATED)
+        val resilienceTestDefinition = ResilienceTestDefinition("TestDefinition", artifact, "TestDescription", stimulus, responseMeasures)
+        val runtimeQualityAnalysis = RuntimeQualityAnalysis()
+        runtimeQualityAnalysis.resilienceTests.add(resilienceTestDefinition)
+        val rqaDefinition = RuntimeQualityAnalysisDefinition("A testing rqaDef", "1", Environment.DEV, "Computer work station", "Using a password manager", runtimeQualityAnalysis)
 
+        runBlocking {
+
+            val loadTestConfig = translationService.translateRqaDefToLoadTestConfig(rqaDefinition)
+            val resilienceTestConfig = translationService.translateRqaDefToResilienceTestConfig(rqaDefinition)
+            log.info(loadTestConfig.loadTestArtifacts.toString())
+            log.info(resilienceTestConfig.enrichedResilienceTestDefinitions.toString())
+            rqaConfigurationProducer.produceLoadtestConfig(loadTestConfig)
+            rqaConfigurationProducer.produceResilienceTestConfig(resilienceTestConfig)
+
+        }
     }
 }
