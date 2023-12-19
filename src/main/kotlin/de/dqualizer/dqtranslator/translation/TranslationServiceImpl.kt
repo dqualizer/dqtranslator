@@ -86,7 +86,7 @@ class TranslationServiceImpl(
     fun nodeToEnrichedResilienceDefinition(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
         val system = mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId}
         if (system?.type?.equals("Process") == true){
-            val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact,system!!.operationId)
+            val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, system!!.operationId, system!!.processPath)
             return EnrichedResilienceTestDefinition(enrichedArtifact, resilienceTestDefinition.description, resilienceTestDefinition.stimulus, resilienceTestDefinition.responseMeasures)
         }
         throw RuntimeException("Something went very wrong")
