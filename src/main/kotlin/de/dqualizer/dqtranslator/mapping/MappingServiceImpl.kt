@@ -3,6 +3,7 @@ package de.dqualizer.dqtranslator.mapping
 import com.fasterxml.jackson.databind.ObjectMapper
 import de.dqualizer.dqtranslator.ContextNotFoundException
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.dam.ServerInfo
 import io.github.dqualizer.dqlang.types.dam.System
 
 import io.ktor.client.*
@@ -61,13 +62,18 @@ class MappingServiceImpl(
 
     override fun getMappingByIdHardcoded(id: String): DomainArchitectureMapping {
 
+        val serverInfo = ServerInfo()
+        serverInfo.id = "testServerId"
+        serverInfo.environment = "DEV"
+        serverInfo.host = "localHost"
+
         val systemForMapping = System()
         systemForMapping.id = "MyComputer"
         systemForMapping.type = "Process"
         systemForMapping.operationId = "KeePassXC.exe"
         systemForMapping.processPath = """C:\Program Files\KeePassXC.exe"""
 
-        return DomainArchitectureMapping("testId", 1, "testContext", mutableSetOf(), mutableSetOf(), setOf(systemForMapping))
+        return DomainArchitectureMapping("testId", 1, "testContext", mutableSetOf(serverInfo), mutableSetOf(), setOf(systemForMapping))
     }
 
 }

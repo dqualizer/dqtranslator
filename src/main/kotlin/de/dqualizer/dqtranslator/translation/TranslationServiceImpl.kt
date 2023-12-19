@@ -46,7 +46,6 @@ class TranslationServiceImpl(
         )
 
         log.info(loadtestConfiguration.toString())
-        log.info(loadtestConfiguration.toString())
         return loadtestConfiguration;
 
     }
@@ -54,7 +53,7 @@ class TranslationServiceImpl(
 
     override fun translateRqaDefToResilienceTestConfig(rqaDefinition: RuntimeQualityAnalysisDefinition): ResilienceTestConfiguration {
         // Get domain architecture Mapping from Api by domain_id
-        val domainArchitectureMapping = mappingService.getMappingById(rqaDefinition.domainId)
+        val domainArchitectureMapping = mappingService.getMappingByIdHardcoded(rqaDefinition.domainId)
 
         val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
         val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
@@ -67,7 +66,6 @@ class TranslationServiceImpl(
                 enrichedResilienceDefinitions.toHashSet()
         )
 
-        log.info(resilienceTestConfiguration.toString())
         log.info(resilienceTestConfiguration.toString())
         return resilienceTestConfiguration;
     }
