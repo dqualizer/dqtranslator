@@ -36,7 +36,7 @@ class TranslationServiceImplTest {
         val systemsSet = mutableSetOf(systemForMapping)
         val domainArchitectureMapping = DomainArchitectureMapping("testId", 1, "testContext", mutableSetOf(), mutableSetOf(), systemsSet)
         val artifact = Artifact(systemId, null)
-        val stimulus = UnavailabilityStimulus("Unavailability", 100)
+        val stimulus = UnavailabilityStimulus(100)
         val responseMeasures = ResilienceResponseMeasures(Satisfaction.TOLERATED)
         val resilienceTestDefinition = ResilienceTestDefinition("TestDefinition", artifact, "TestDescription", stimulus, responseMeasures)
         val runtimeQualityAnalysis = RuntimeQualityAnalysis()
@@ -59,7 +59,7 @@ class TranslationServiceImplTest {
                 { Assertions.assertEquals(systemId, result.enrichedResilienceTestDefinitions.first().artifact.systemId)},
                 { Assertions.assertEquals(null, result.enrichedResilienceTestDefinitions.first().artifact.activityId)},
                 { Assertions.assertEquals("TestDescription", result.enrichedResilienceTestDefinitions.first().description)},
-                { Assertions.assertEquals("Unavailability", result.enrichedResilienceTestDefinitions.first().stimulus.type)},
+                //{ Assertions.assertEquals("Unavailability", result.enrichedResilienceTestDefinitions.first().stimulus.type)},
                 { Assertions.assertEquals(100, result.enrichedResilienceTestDefinitions.first().stimulus.accuracy)},
                 { Assertions.assertEquals(Satisfaction.TOLERATED, result.enrichedResilienceTestDefinitions.first().responseMeasure.recoveryTime)},
         )

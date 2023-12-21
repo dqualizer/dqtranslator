@@ -10,6 +10,7 @@ import io.github.dqualizer.dqlang.types.rqa.definition.enums.Environment
 import io.github.dqualizer.dqlang.types.rqa.definition.enums.Satisfaction
 import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.ResilienceResponseMeasures
 import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.ResilienceTestDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.stimulus.ResilienceStimulus
 import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.stimulus.UnavailabilityStimulus
 
 
@@ -66,7 +67,8 @@ class MessageController (private val translationService: TranslationService,
         log.info("RqaDefinitionReceiver received order to translate hardcoded RQA Definition. Starting now...")
 
         val artifact = Artifact("MyComputer", null)
-        val stimulus = UnavailabilityStimulus("Unavailability", 100)
+        val stimulus = UnavailabilityStimulus(100)
+        //stimulus.accuracy = 100
         val responseMeasures = ResilienceResponseMeasures(Satisfaction.TOLERATED)
         val resilienceTestDefinition = ResilienceTestDefinition("TestDefinition", artifact, "TestDescription", stimulus, responseMeasures)
         val runtimeQualityAnalysis = RuntimeQualityAnalysis()
