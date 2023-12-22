@@ -78,7 +78,6 @@ class MessageController (private val translationService: TranslationService,
 
         val artifact = Artifact("MyComputer", null)
         val resilienceStimulus = UnavailabilityStimulus(100)
-        //stimulus.accuracy = 100
         val responseMeasures = ResilienceResponseMeasures(Satisfaction.TOLERATED)
         val resilienceTestDefinition = ResilienceTestDefinition("TestDefinition", artifact, "TestDescription", resilienceStimulus, responseMeasures)
 
@@ -100,13 +99,17 @@ class MessageController (private val translationService: TranslationService,
 
         runBlocking {
 
-            val loadTestConfig = translationService.translateRqaDefToLoadTestConfig(rqaDefinition)
-            val resilienceTestConfig = translationService.translateRqaDefToResilienceTestConfig(rqaDefinition)
-            log.info(loadTestConfig.loadTestArtifacts.toString())
-            log.info(resilienceTestConfig.enrichedResilienceTestDefinitions.toString())
-            rqaConfigurationProducer.produceLoadtestConfig(loadTestConfig)
-            rqaConfigurationProducer.produceResilienceTestConfig(resilienceTestConfig)
+            if(rqaDefinition.runtimeQualityAnalysis.resilienceTests.isNotEmpty()){
+                val resilienceTestConfig = translationService.translateRqaDefToResilienceTestConfig(rqaDefinition)
+                log.info(resilienceTestConfig.enrichedResilienceTestDefinitions.toString())
+                rqaConfigurationProducer.produceResilienceTestConfig(resilienceTestConfig)
+            }
 
+            if (rqaDefinition.runtimeQualityAnalysis.loadtests.isNotEmpty()){
+                val loadTestConfig = translationService.translateRqaDefToLoadTestConfig(rqaDefinition)
+                log.info(loadTestConfig.loadTestArtifacts.toString())
+                rqaConfigurationProducer.produceLoadtestConfig(loadTestConfig)
+            }
         }
     }
 }

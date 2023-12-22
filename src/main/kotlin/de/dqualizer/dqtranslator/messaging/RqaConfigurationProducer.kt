@@ -14,17 +14,20 @@ class RQAConfigurationProducer(
         val messageConverter: MessageConverter
 ) {
 
-    @Value("\${dqualizer.messaging.queues.rqaConfigurationProducerQueue.name}")
-    private lateinit var producerQueueRoutingKey: String
+    @Value("\${dqualizer.messaging.queues.loadTestConfigurationQueue.name}")
+    private lateinit var loadTestingQueueRoutingKey: String
+
+    @Value("\${dqualizer.messaging.queues.resilienceTestConfigurationQueue.name}")
+    private lateinit var resilienceTestingQueueRoutingKey: String
 
 
     fun produceLoadtestConfig(loadtestConfiguration: LoadTestConfiguration) {
         val message = messageConverter.toMessage(loadtestConfiguration,MessageProperties().apply {  })
-        template.convertAndSend(producerQueueRoutingKey, message)
+        template.convertAndSend(loadTestingQueueRoutingKey, message)
     }
 
     fun produceResilienceTestConfig(resilienceTestConfig: ResilienceTestConfiguration) {
         val message = messageConverter.toMessage(resilienceTestConfig,MessageProperties().apply {  })
-        template.convertAndSend(producerQueueRoutingKey, message)
+        template.convertAndSend(resilienceTestingQueueRoutingKey, message)
     }
 }

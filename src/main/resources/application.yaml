@@ -7,8 +7,10 @@ spring:
 dqualizer:
   messaging:
     queues:
-      rqaConfigurationProducerQueue:
-        name: 'rqaConfigurationProducer'
+      loadTestConfigurationQueue:
+        name: 'loadTestConfigurationQueue'
+      resilienceTestConfigurationQueue:
+        name: 'resilienceTestConfigurationQueue'
     exchanges:
       rqaConfigurationExchange:
         name: "rqaConfiguration"
