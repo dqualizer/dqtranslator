@@ -26,7 +26,7 @@ class TranslationServiceImpl(
 
     override fun translateRqaDefToLoadTestConfig(rqaDefinition: RuntimeQualityAnalysisDefinition): LoadTestConfiguration {
         // Get domain architecture Mapping from Api by domain_id
-        val domainArchitectureMapping = mappingService.getMappingByIdHardcoded(rqaDefinition.domainId)
+        val domainArchitectureMapping = mappingService.getMappingById(rqaDefinition.domainId)
         val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadtests
 
         // Artifact will always be an Edge...
@@ -53,7 +53,7 @@ class TranslationServiceImpl(
 
     override fun translateRqaDefToResilienceTestConfig(rqaDefinition: RuntimeQualityAnalysisDefinition): ResilienceTestConfiguration {
         // Get domain architecture Mapping from Api by domain_id
-        val domainArchitectureMapping = mappingService.getMappingByIdHardcoded(rqaDefinition.domainId)
+        val domainArchitectureMapping = mappingService.getMappingById(rqaDefinition.domainId)
 
         val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
         val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
