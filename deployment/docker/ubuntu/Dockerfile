@@ -7,8 +7,6 @@ ARG GITHUB_USER
 # Token used in local builds to access github packages
 # or GITHUB_TOKEN in CI
 ARG GITHUB_PACKAGE_READ_TOKEN
-
-
 FROM --platform=$BUILDPLATFORM gradle:8 AS builder-base-image
 
 # Set the working directory to /app
@@ -35,10 +33,10 @@ RUN apt-get -qq update
 RUN apt-get -qq -y --no-install-recommends install gettext
 RUN ./scripts/setup.sh $GITHUB_USER $GITHUB_PACKAGE_READ_TOKEN
 
-RUN 
+
 ### ----------- Builder Resolver and Executor ----------- ###
 FROM ${EXECUTION_ENV}-builder as build-executor
-RUN gradle --init-script gradle/init.gradle assemble
+RUN ./gradlew --init-script gradle/init.gradle assemble --no-daemon
 
 
 #### ----------- Runner Definiton ----------- ###
