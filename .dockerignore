@@ -1,0 +1,8 @@
+.github/
+.gradle/
+bin/
+deployment/
+doc/
+.gitignore
+LICENSE
+**/*.md
