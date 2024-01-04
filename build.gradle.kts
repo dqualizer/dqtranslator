@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "3.0.5"
 	id("io.spring.dependency-management") version "1.1.0"
-	kotlin("jvm") version "1.7.22"
-	kotlin("plugin.spring") version "1.7.22"
-	kotlin("plugin.serialization") version "1.7.22"
+	kotlin("jvm") version "1.9.0"
+	kotlin("plugin.spring") version "1.9.0"
+	kotlin("plugin.serialization") version "1.9.0"
 
 	id("net.researchgate.release") version "3.0.2"
 	id("maven-publish")
@@ -56,9 +56,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
-
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-	implementation("dqualizer:dqlang:0.2.0")
+	implementation("io.github.dqualizer:dqlang:2.0.16")
+	implementation("io.ktor:ktor-client-core:2.3.3")
+	implementation("io.ktor:ktor-client-cio:2.3.3")
+	implementation("io.ktor:ktor-client-logging:2.3.3")
+
 }
 
 tasks.withType<KotlinCompile> {

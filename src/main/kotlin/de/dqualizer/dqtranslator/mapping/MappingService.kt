@@ -1,7 +1,10 @@
 package de.dqualizer.dqtranslator.mapping
 
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
+
 
 interface MappingService {
     fun getMappingByContext(context: String): DomainArchitectureMapping
+
+    fun getMappingById(id: String): DomainArchitectureMapping
 }

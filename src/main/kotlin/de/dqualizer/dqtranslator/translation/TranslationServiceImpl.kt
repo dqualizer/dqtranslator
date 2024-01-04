@@ -2,13 +2,15 @@ package de.dqualizer.dqtranslator.translation
 
 import de.dqualizer.dqtranslator.EnvironmentNotFoundException
 import de.dqualizer.dqtranslator.mapping.MappingService
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.DomainArchitectureMapping
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.domainarchitecturemapping.Endpoint
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.loadtest.LoadTest
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.loadtest.LoadTestConfig
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.Artifact
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.ModeledLoadTest
-import dqualizer.dqlang.archive.loadtesttranslator.dqlang.modeling.RuntimeQualityAnalysisDefintion
+import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.dam.Endpoint
+import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestArtifact
+import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
+import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
+import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.LoadTestDefinition
+
+
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -18,59 +20,69 @@ class TranslationServiceImpl(
 ) : TranslationService {
     private val log = LoggerFactory.getLogger(TranslationService::class.java)
 
-    override fun translate(rqaDefinition: RuntimeQualityAnalysisDefintion): LoadTestConfig {
-        val mapping = mappingService.getMappingByContext(rqaDefinition.context)
+    override fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition): LoadTestConfiguration {
+        // Get Mapping from Api by domain_id
+        val mapping = mappingService.getMappingById(rqaDefinition.domainId)
 
-        val loadTestSpecs = rqaDefinition.rqa.loadtests
-        val nodes = loadTestSpecs.filter { it.artifact.isNode() }
-        val edges = loadTestSpecs.filter { it.artifact.isEdge() }
+        val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadtests
 
-        val loadTestConfigurations = nodes.map { nodeToLoadTests(it, mapping) }.flatten() + edges.map { edgeToLoadTest(it, mapping) }
+        // Artifact will always be an Edge...
+        val (systems, activities) = loadTestDefinition.partition { it.artifact.activityId == null }
 
-        return LoadTestConfig(
+        val loadTestConfigurations = systems.map { nodeToLoadTests(it, mapping) }.flatten() + activities.map { edgeToLoadTest(it, mapping) }
+        loadTestConfigurations.forEach {loadTestConfiguration ->
+            loadTestConfiguration.endpoint.payloads = ArrayList()
+            }
+        val loadtestConfiguration = LoadTestConfiguration(
                 rqaDefinition.version,
                 rqaDefinition.context,
-                rqaDefinition.environment,
-                mapping.getEndpoint(rqaDefinition.environment),
-                LinkedHashSet(loadTestConfigurations))
+                rqaDefinition.environment.toString(),
+                mapping.getEndpoint(rqaDefinition.environment.toString()),
+                loadTestConfigurations.toHashSet()
+        )
+        log.info(loadtestConfiguration.toString())
+        return loadtestConfiguration
+
     }
 
-    fun nodeToLoadTests(loadtestSpec: ModeledLoadTest, mapping: DomainArchitectureMapping): List<LoadTest> {
-        return mapping.objects.firstOrNull { it.dqID == loadtestSpec.artifact.`object` }
-                ?.activities?.map { activity -> activity.endpoint }?.map { LoadTest(loadtestSpec.artifact, loadtestSpec.description, loadtestSpec.stimulus, loadtestSpec.responseMeasure, it) }
+    fun nodeToLoadTests(loadtestDefinition: LoadTestDefinition, mapping: DomainArchitectureMapping): List<LoadTestArtifact> {
+        return mapping.systems.firstOrNull { it.id == loadtestDefinition.artifact.systemId }
+                ?.activities?.map { activity -> activity.endpoint }
+                ?.map { LoadTestArtifact(loadtestDefinition.artifact, loadtestDefinition.description, loadtestDefinition.stimulus, loadtestDefinition.responseMeasures, it) }
                 ?: throw RuntimeException("Something went very wrong")
+
     }
 
-    fun edgeToLoadTest(loadtestSpec: ModeledLoadTest, mapping: DomainArchitectureMapping): LoadTest {
-        return LoadTest(
+    fun edgeToLoadTest(loadtestSpec: LoadTestDefinition, mapping: DomainArchitectureMapping): LoadTestArtifact {
+        return LoadTestArtifact(
                 loadtestSpec.artifact,
                 loadtestSpec.description,
                 loadtestSpec.stimulus,
-                loadtestSpec.responseMeasure,
+                loadtestSpec.responseMeasures,
                 loadtestSpec.getEndpoint(mapping)
                 )
     }
 
-    private fun ModeledLoadTest.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
-        return mapping.objects.firstOrNull { it.dqID == this.artifact.objectId }
-                ?.activities?.firstOrNull { it.dqID == this.artifact.activity }
+    private fun LoadTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
+        return mapping.systems.firstOrNull { it.id == this.artifact.systemId }
+                ?.activities?.firstOrNull { it.id == this.artifact.activityId }
                 ?.endpoint
                 ?: throw RuntimeException("Something went very wrong")
     }
 
     private fun DomainArchitectureMapping.getEndpoint(environment: String): String {
-        return this.serverInfo.firstOrNull { it.environment == environment }?.host
+        return this.serverInfos.firstOrNull { it.environment == environment }?.host
                 ?: throw EnvironmentNotFoundException(environment)
     }
 
     private fun Artifact.isNode(): Boolean {
-        return this.activity == null
+        return this.activityId == null
     }
 
     private fun Artifact.isEdge(): Boolean {
-        return this.activity != null
+        return this.systemId != null
     }
 
-    val Artifact.objectId: String
-        get() = `object`
+    val Artifact.systemId: String
+        get() = `systemId`
 }
