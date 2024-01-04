@@ -33,7 +33,7 @@ RUN ./scripts/setup.sh $GITHUB_USER $GITHUB_PACKAGE_READ_TOKEN
 
 ### ----------- Builder Resolver and Executor ----------- ###
 FROM ${EXECUTION_ENV}-builder as build-executor
-RUN gradle --init-script gradle/init.gradle assemble
+RUN ./gradlew --init-script gradle/init.gradle assemble --no-daemon
 
 
 #### ----------- Runner Definiton ----------- ###
