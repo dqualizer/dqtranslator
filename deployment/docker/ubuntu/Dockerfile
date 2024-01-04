@@ -9,12 +9,12 @@ ARG GITHUB_USER
 ARG GITHUB_PACKAGE_READ_TOKEN
 
 
-FROM --platform=$BUILDPLATFORM gradle:8-alpine AS builder-base-image
+FROM --platform=$BUILDPLATFORM gradle:8 AS builder-base-image
 
 # Set the working directory to /app
 WORKDIR /app
 COPY . .
-
+RUN chmod +x scripts/setup.sh
 
 
 ### ----------- Builder CI ----------- ###
@@ -28,45 +28,29 @@ FROM builder-base-image as local-builder
 ARG GITHUB_USER
 ARG GITHUB_PACKAGE_READ_TOKEN
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 # ensure envsubst
-RUN apk update && apk add gettext
+RUN apt-get -qq update
+RUN apt-get -qq -y --no-install-recommends install gettext
+RUN ./scripts/setup.sh $GITHUB_USER $GITHUB_PACKAGE_READ_TOKEN
 
-# enable dqlang access
-RUN cd gradle \
-  && echo $' allprojects {\n\
-  repositories {\n\
-  maven {\n\
-  url =  uri("https://maven.pkg.github.com/dqualizer/dqlang")\n\
-  credentials {\n\
-  username = "$GITHUB_USER"\n\
-  password = "$GITHUB_PACKAGE_READ_TOKEN"\n\
-  }\n\
-  }\n\
-  }\n\
-  } ' > init.gradle \
-  && tmpfile=$(mktemp) \
-  && envsubst < init.gradle > $tmpfile \
-  && mv -f $tmpfile init.gradle
-
-
+RUN 
 ### ----------- Builder Resolver and Executor ----------- ###
 FROM ${EXECUTION_ENV}-builder as build-executor
 RUN gradle --init-script gradle/init.gradle assemble
 
 
 #### ----------- Runner Definiton ----------- ###
-FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre-alpine
+FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre
 
 # Set the working directory to /app
 WORKDIR /app
 
 # Copy the jar file from the build stage
-COPY --from=build-executor /app/build/libs/*.jar /app/dqtransaltor.jar
-
-RUN wget -O ./opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.26.0/opentelemetry-javaagent.jar
-
+COPY --from=build-executor /app/build/libs/*.jar /app/app.jar
 
 EXPOSE 8080
 
 # Run the jar file
-CMD ["java","-javaagent:opentelemetry-javaagent.jar", "-jar", "dqtransaltor.jar"]
+CMD ["java", "-jar", "app.jar"]

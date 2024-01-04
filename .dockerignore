@@ -1,0 +1,10 @@
+.github/
+.gradle/
+bin/
+deployment/
+doc/
+.gitignore
+gradlew
+gradlew.bat
+LICENSE
+**/*.md
