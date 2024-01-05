@@ -9,6 +9,7 @@ plugins {
 
 	id("net.researchgate.release") version "3.0.2"
 	id("maven-publish")
+
 }
 
 group = "de.dqualizer"
@@ -19,15 +20,13 @@ release {
 	//no config needed, see https://github.com/researchgate/gradle-release for options
 }
 
+
 publishing{
 	repositories {
 		maven {
-			name = "GitHubPackages"
+			name = "gpr"
 			url = uri("https://maven.pkg.github.com/dqualizer/dqtranslator")
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
-			}
+			credentials(PasswordCredentials::class)
 		}
 		publications {
 			register("jar", MavenPublication::class) {
@@ -49,6 +48,11 @@ configurations {
 
 repositories {
 	mavenCentral()
+	 maven {
+		 name="gpr"
+		url = uri("https://maven.pkg.github.com/dqualizer/dqlang")
+		credentials(PasswordCredentials::class)
+	 }
 }
 
 dependencies {
@@ -74,9 +78,4 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-}
-
-// Disable generation of "-plain" jar by the Spring Boot plugin
-tasks.getByName<Jar>("jar") {
-	enabled = false
 }

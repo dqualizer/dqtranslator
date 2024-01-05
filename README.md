@@ -9,7 +9,7 @@ Think of the dqtranslator as a bridge among the other components, converting tec
 
 A more detailed description of this component's architecture is provided in the [arc42 document](https://dqualizer.github.io/dqualizer). 
 
-## Installation
+## Development
 ### Prerequisites
 1.<b> Java Development Kit (JDK) 17 or higher: </b> Ensure that a JDK is installed on your machine as it's required to build and run Java applications. 
 
@@ -19,8 +19,22 @@ A more detailed description of this component's architecture is provided in the 
 
 4.<b> Docker: </b> Install Docker on your local machine to work with containers. You might want to deploy the dqTranslator application locally.
 
-5.<b> GitHub Token </b>: You need to create a personal GitHub Access Token for a local Docker Image Build, so you can retrieve the GitHub Package of dqlang. [Managing GitHub Tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+5.<b> GitHub Token </b>: You need to create a personal GitHub Access Token, so you can retrieve the GitHub Package of dqlang. [Managing GitHub Tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+
+
 Please refer to the respective official documentation for detailed installation and configuration instructions. This section is just a guide to get you started with the essential prerequisites for setting up and deploying dqTranslator.
+
+### Compiling
+Before you can start developing, you have to set up your development environment properly.
+If it doesnt exist, create a gradle.properties in your GRADLE_HOME directory with the following content:
+```
+gprUsername=YOUR_GITHUB_USERNAME
+gprPassword=YOUR_GITHUB_ACCESS_TOKEN
+```
+
+[Here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) you can look up, how to create a GitHub Access Token.
+Without this configuration, you are not able to access dqlang or push a dqtranslator container to the registry.
+
 
 ### Building 
 It is considered best prectice to use the projects wrapper to execute gradle tasks like building and running the application.
@@ -32,4 +46,4 @@ You could also use the locally installed gradle instance by using ```gradle buil
 Depending on your operating system you can use the dockerfiles in /docker.
 Use /docker/ubuntu/Dockerfile to build on M1 / M2 Chips and /docker/alpine/Dockerfile for all other platforms.
 Example: 
-```docker buildx build -t dqtranslator:no-alpine -f deployment/docker/ubuntu/Dockerfile --build-arg="GITHUB_USER=SomeUser" --build-arg="GITHUB_PACKAGE_READ_TOKEN=SomeToken" .```
+```docker buildx build -t dqtranslator:no-alpine -f deployment/docker/ubuntu/Dockerfile --build-arg="GITHUB_USER=SomeUser" --build-arg="GITHUB_TOKEN=SomeToken" .```
