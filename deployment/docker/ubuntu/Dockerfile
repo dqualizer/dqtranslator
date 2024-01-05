@@ -46,9 +46,9 @@ FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre
 WORKDIR /app
 
 # Copy the jar file from the build stage
-COPY --from=build-executor /app/build/libs/*.jar /app/app.jar
+COPY --from=build-executor /app/build/libs/*.jar /app/dqtranslator.jar
 
 EXPOSE 8080
 
 # Run the jar file
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "dqtranslator.jar"]
