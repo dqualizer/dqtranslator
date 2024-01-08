@@ -15,8 +15,8 @@ dqualizer:
       rqaConfigurationExchange:
         name: "rqaConfiguration"
   dqapi:
-    host: 'localhost'
-    port: '8099'
+    host: ${DQAPI_HOST:'localhost'}
+    port: ${DQAPI_PORT:'8099'}
 
   mappingDirectory: 'mappings'
 
