@@ -1,14 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dqlang_version = "2.0.3"
-
 plugins {
-	id("org.springframework.boot") version "3.0.5"
-	id("io.spring.dependency-management") version "1.1.0"
+	id("org.springframework.boot") version "3.2.1"
 
-	kotlin("jvm") version "1.9.0"
-	kotlin("plugin.spring") version "1.9.0"
-	kotlin("plugin.serialization") version "1.9.0"
+	kotlin("jvm") version "1.9.10"
+	kotlin("plugin.spring") version "1.9.10"
+	kotlin("plugin.serialization") version "1.9.10"
 
 	id("net.researchgate.release") version "3.0.2"
 	id("maven-publish")
@@ -55,17 +52,32 @@ repositories {
 	mavenCentral()
 }
 
+configurations.all {
+	resolutionStrategy {
+		cacheChangingModulesFor(0, "seconds")
+	}
+}
+
 dependencies {
+	implementation(platform("org.springframework.boot:spring-boot-dependencies:3.2.1"))
+
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-	implementation("io.github.dqualizer:dqlang:$dqlang_version")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
+//	implementation("io.github.dqualizer:dqlang:3.0.0-SNAPSHOT"){
+//		isChanging = true
+//	}
+	implementation(project(":dqlang"))
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
+	testImplementation("org.jeasy:easy-random-core:5.0.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+	//assertJ
+	testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 tasks.withType<KotlinCompile> {

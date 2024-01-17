@@ -4,6 +4,9 @@ dqualizer:
       rqaDefinitionReceiverQueue:
         name: 'rqaDefinitionReceiver'
       rqaConfigurationProducerQueue:
-        name: 'rqaConfigurationProducer'
+        name: 'rqaConfiguration'
 
   mappingDirectory: 'mappings'
+
+
+repositories.mongohost...

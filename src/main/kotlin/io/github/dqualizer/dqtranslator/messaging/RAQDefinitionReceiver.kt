@@ -13,7 +13,7 @@ import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 
 @Component
-class RqaDefinitionReceiver(
+class RAQDefinitionReceiver(
     private val rqaTranslators: List<RQATranslator>,
     private val rqaConfigurationProducer: RQAConfigurationProducer,
 ) {

@@ -27,23 +27,7 @@ class MappingServiceImpl(
             .getResources("classpath:$mappingDirectory/*.json")
             .map { it.inputStream.bufferedReader().readText() }
             .map { objectMapper.readValue(it, DomainArchitectureMapping::class.java) }
-            .firstOrNull { it.context == context } ?: throw ContextNotFoundException(context)
-    }
-
-    fun resolveDQIDToTechnicalContext(context: String, id: String): Optional<Any> {
-        val dam = getDAMByContext(context)
-
-        dam.systems.find { it.id == id }?.let {
-            return Optional.of(it)
-        }
-        dam.actors.find { it.id == id }?.let {
-            return Optional.of(it)
-        }
-        dam.serverInfos.find { it.id == id }?.let {
-            return Optional.of(it)
-        }
-
-        return Optional.empty()
+            .firstOrNull { it.id == context } ?: throw ContextNotFoundException(context)
     }
 
     /**
