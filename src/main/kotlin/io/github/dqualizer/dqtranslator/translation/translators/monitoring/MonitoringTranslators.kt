@@ -105,6 +105,9 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
             throw IllegalArgumentException("Instrument name $instrumentName does not match the opentelemetry spec.")
         }
 
+        // TODO: This should be a default, I guess?
+        val histogramBuckets: List<Double> = listOf(1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0)
+
         val instrument = Instrument(
             mapOf(
                 "monitoring_id" to monitoringDefinition.id
@@ -114,6 +117,8 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
             instrumentType,
             monitoringDefinition.measurementType,
             monitoringDefinition.measurementUnit,
+            codeComponent.id,
+            histogramBuckets,
             location
         )
 
