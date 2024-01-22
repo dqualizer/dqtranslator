@@ -6,15 +6,17 @@ spring:
       fail-on-unknown-properties: false
 dqualizer:
   messaging:
-    queues:
+    queues: # Queues to connect to
+      rqaDefinitionReceiverQueue:
+        name: 'rqaDefinitionReceiver'
       rqaConfigurationProducerQueue:
-        name: 'rqaConfigurationProducer'
-    exchanges:
-      rqaConfigurationExchange:
-        name: "rqaConfiguration"
+        name: 'rqaConfiguration'
   dqapi:
     host: 'localhost'
     port: '8099'
 
   mappingDirectory: 'mappings'
 
+
+
+repositories.mongohost...
