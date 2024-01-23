@@ -117,7 +117,7 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
             instrumentType,
             monitoringDefinition.measurementType,
             monitoringDefinition.measurementUnit,
-            codeComponent.id,
+            codeComponent.id!!,
             histogramBuckets,
             location
         )

@@ -1,7 +1,5 @@
 package io.github.dqualizer.dqtranslator.translation.translators
 
-import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
-import io.github.dqualizer.dqlang.types.dam.architecture.CodeComponent
 import io.github.dqualizer.dqlang.types.dam.architecture.ServiceDescription
 import io.github.dqualizer.dqlang.types.dam.domainstory.DSTElement
 import io.github.dqualizer.dqlang.types.dam.mapping.*
@@ -9,11 +7,7 @@ import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
 import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.MonitoringConfiguration
 import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.ServiceMonitoringConfiguration
 import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.instrumentation.Instrument
-import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.instrumentation.InstrumentLocation
-import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.instrumentation.InstrumentType
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
-import io.github.dqualizer.dqlang.types.rqa.definition.monitoring.MeasurementType
-import io.github.dqualizer.dqlang.types.rqa.definition.monitoring.MonitoringDefinition
 import io.github.dqualizer.dqtranslator.mapping.MappingServiceImpl
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import org.springframework.stereotype.Service

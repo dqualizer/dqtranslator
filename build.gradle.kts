@@ -69,7 +69,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("io.github.dqualizer:dqlang:3.0.0")
+	implementation("io.github.dqualizer:dqlang:3.0.5")
 	implementation("io.ktor:ktor-client-core:2.3.3")
 	implementation("io.ktor:ktor-client-cio:2.3.3")
 	implementation("io.ktor:ktor-client-logging:2.3.3")

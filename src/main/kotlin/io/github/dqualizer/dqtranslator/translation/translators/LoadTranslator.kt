@@ -30,10 +30,10 @@ class LoadTranslator(
     private fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition): LoadTestConfiguration {
         val dam = mappingService.getDAMByContext(rqaDefinition.domainId)
 
-        val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadtests
+        val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadTestDefinition
 
         // Artifact will always be an Edge...
-        val (systems, activities) = loadTestDefinition.partition { it.artifact.activityId == null }
+        val (systems, activities) = loadTestDefinition.partition { it.artifact?.activityId == null }
 
         val loadTestConfigurations =
             systems.map { nodeToLoadTests(it, dam) }.flatten() + activities.map { edgeToLoadTest(it, dam) }
@@ -54,11 +54,11 @@ class LoadTranslator(
         loadtestDefinition: LoadTestDefinition,
         mapping: DomainArchitectureMapping
     ): List<LoadTestArtifact> {
-        val actor = mapping.domainStory.actors.firstOrNull { it.id == loadtestDefinition.artifact.systemId }
+        val actor = mapping.domainStory.actors.firstOrNull { it.id == loadtestDefinition.artifact?.systemId }
         val activitiesOfSpecifiedActor = mapping.domainStory.activities.filter { it.initiators.contains(actor?.id) }
         val loadTestArtifacts = mutableListOf<LoadTestArtifact>()
         for (activity in activitiesOfSpecifiedActor) {
-            val endpoint = mapping.mapper.mapToArchitecturalEntity(activity) as RESTEndpoint
+            val endpoint = mapping.getMapper().mapToArchitecturalEntity(activity) as RESTEndpoint
             loadTestArtifacts.add(
                 LoadTestArtifact(
                     loadtestDefinition.artifact,
@@ -83,18 +83,18 @@ class LoadTranslator(
     }
 
     private fun LoadTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): RESTEndpoint {
-        val actor = mapping.domainStory.actors.first { it.id == this.artifact.systemId }
+        val actor = mapping.domainStory.actors.first { it.id == this.artifact?.systemId }
         val activityOfSpecifiedActor = mapping.domainStory.activities.first { it.initiators.contains(actor.id) }
-        return (mapping.mapper.mapToArchitecturalEntity(activityOfSpecifiedActor) as RESTEndpoint)
+        return (mapping.getMapper().mapToArchitecturalEntity(activityOfSpecifiedActor) as RESTEndpoint)
     }
 
     private fun DomainArchitectureMapping.getEndpoint(environment: String): String {
         val services = this.softwareSystem.services
         for (service in services) {
-            val serviceInfos = service.apiSchema.serverInfo
+            val serviceInfos = service.apiSchema.serverInfo!!
             for (serviceInfo in serviceInfos) {
                 if (serviceInfo.environment == environment) {
-                    return serviceInfo.host
+                    return serviceInfo.host!!
                 }
             }
         }
