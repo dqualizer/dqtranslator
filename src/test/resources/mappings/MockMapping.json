@@ -17,6 +17,13 @@
         "name": "Assignement Service",
         "uri": "http://assignment-service:8080",
         "runtime_platform_id": "dockerHost1",
+        "endpoints": [],
+        "deployment_name": "assignment-service",
+        "programming_language": "Java",
+        "programming_framework": {
+          "type": "Spring",
+          "version": "2.7.10"
+        },
         "instrumentation_framework": {
           "name": "InspectIT Ocelot",
           "existing": false,
@@ -30,10 +37,6 @@
             "INSPECTIT_EXPORTERS_TRACING_LOGGING_ENABLED": "true",
             "INSPECTIT_SERVICE_NAME": "assignment-service"
           }
-        },
-        "programming_framework": {
-          "type": "Spring",
-          "version": "2.7.10"
         },
         "code_components": [
           {
@@ -68,34 +71,40 @@
     "actors": [
       {
         "id": "f3e3e3e3-7e4c-40b2-9494-aadec45fb2a4",
-        "name": "Petra",
-        "_class": "io.github.dqualizer.dqlang.types.dam.domainstory.Person"
+        "person_name": "Petra",
+        "_class": "io.github.dqualizer.dqlang.types.dam.domainstory.Person",
+        "@type": "Person"
       },
       {
         "id": "fasdfasf-684e-40b2-9494-aadec45fb2a4",
-        "name": "Assignment Service",
-        "_class": "io.github.dqualizer.dqlang.types.dam.domainstory.System"
+        "system_name": "Assignment Service",
+        "_class": "io.github.dqualizer.dqlang.types.dam.domainstory.System",
+        "@type": "System"
       }
     ],
     "work_objects": [
       {
         "id": "5855495e-b08d-4f28-a3ea-b042b10adc1b",
         "name": "Company Data",
-        "type": "MISC"
+        "type": "MISC",
+        "@type": "WorkObject"
       },
       {
         "id": "ace97d17-685d-4563-bf4d-31d0339a505d",
         "name": "Assignment Data",
-        "type": "DOCUMENT"
+        "type": "DOCUMENT",
+        "@type": "WorkObject"
       },
       {
         "id": "680a0aad-546a-4baa-a3ee-55dc491ad76a",
         "name": "Master Data",
         "type": "DOCUMENT",
+        "@type": "WorkObject",
         "value_objects": [
           {
             "id": "6f066acc-25c3-4c81-8cba-0b2209da3901",
-            "name": "FiscalYearData"
+            "name": "FiscalYearData",
+            "@type": "ValueObject"
           }
         ]
       }
@@ -111,25 +120,31 @@
         ],
         "initiators": [
           "fasdfasf-684e-40b2-9494-aadec45fb2a4"
-        ]
+        ],
+        "targets": []
       }
     ]
   },
   "mappings": [
     {
       "architecture_element_id": "626d2ce0-fb90-4a67-97bb-e1b63911cc67",
-      "dst_element_id": "fasdfasf-684e-40b2-9494-aadec45fb2a4"
+      "dst_element_id": "fasdfasf-684e-40b2-9494-aadec45fb2a4",
+      "@type": "SystemToComponentMapping"
     },
     {
       "architecture_element_id": "06b0897c-2f02-4519-af3c-cf487fd60362",
-      "dst_element_id": "6f066acc-25c3-4c81-8cba-0b2209da3901"
+      "dst_element_id": "6f066acc-25c3-4c81-8cba-0b2209da3901",
+      "work_object_id": "680a0aad-546a-4baa-a3ee-55dc491ad76a",
+      "code_component_id": "b0c8d460-ea74-4163-a463-f4a7aa1f3808",
+      "@type": "ValueObjectToTypeMapping"
     },
     {
       "dst_element_id": "5a3c4a6c-1176-403a-a941-845c0a80ca93",
       "architecture_element_id": "71b7f3f7-bc5f-427e-803b-7dd4f389c7bb",
       "end": "5dfbb583-7ecb-4045-8497-c4d28117a670",
-      "start_correlation_id":  "message.getPayload().getCorrelationId()",
-      "end_correlation_id": "payload.getCorrelationId()"
+      "start_correlation_id": "message.getPayload().getCorrelationId()",
+      "end_correlation_id": "payload.getCorrelationId()",
+      "@type": "ActivityToCallMapping"
     }
   ]
 }
