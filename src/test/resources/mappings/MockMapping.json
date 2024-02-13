@@ -5,10 +5,10 @@
     "name": "Instrumentation Mock",
     "environment": "DEV",
     "description": "This is a mock system.",
-    "runtimePlatforms": [
+    "runtime_platforms": [
       {
         "name": "Docker",
-        "platformId": "dockerHost1"
+        "platform_id": "dockerHost1"
       }
     ],
     "services": [
@@ -16,7 +16,7 @@
         "id": "626d2ce0-fb90-4a67-97bb-e1b63911cc67",
         "name": "Assignement Service",
         "uri": "http://assignment-service:8080",
-        "runtimePlatformId": "dockerHost1",
+        "runtime_platform_id": "dockerHost1",
         "instrumentation_framework": {
           "name": "InspectIT Ocelot",
           "existing": false,
@@ -51,19 +51,20 @@
           {
             "id": "b0c8d460-ea74-4163-a463-f4a7aa1f3808",
             "name": "Master Data",
-            "file":"MasterDataResponseDto.java",
+            "file": "MasterDataResponseDto.java",
             "identifier": "dqualizer.fibumock.stammdaten.stammdaten.acds.kafka.MasterDataResponseDto"
-          },{
+          },
+          {
             "id": "06b0897c-2f02-4519-af3c-cf487fd60362",
             "name": "Fiscal Year Data",
-            "file":"MasterDataResponseDto.java",
+            "file": "MasterDataResponseDto.java",
             "identifier": "dqualizer.fibumock.stammdaten.stammdaten.acds.kafka.MasterDataResponseDto#getAccountDataForFiscalYearList()"
           }
         ]
       }
     ]
   },
-  "domainStory": {
+  "domain_story": {
     "actors": [
       {
         "id": "f3e3e3e3-7e4c-40b2-9494-aadec45fb2a4",
@@ -76,7 +77,7 @@
         "_class": "io.github.dqualizer.dqlang.types.dam.domainstory.System"
       }
     ],
-    "workObjects": [
+    "work_objects": [
       {
         "id": "5855495e-b08d-4f28-a3ea-b042b10adc1b",
         "name": "Company Data",
@@ -91,7 +92,7 @@
         "id": "680a0aad-546a-4baa-a3ee-55dc491ad76a",
         "name": "Master Data",
         "type": "DOCUMENT",
-        "valueObjects": [
+        "value_objects": [
           {
             "id": "6f066acc-25c3-4c81-8cba-0b2209da3901",
             "name": "FiscalYearData"
@@ -105,7 +106,7 @@
         "name": "Activity 5",
         "number": 5,
         "action": "requests",
-        "workObjects": [
+        "work_objects": [
           "680a0aad-546a-4baa-a3ee-55dc491ad76a"
         ],
         "initiators": [
@@ -114,7 +115,7 @@
       }
     ]
   },
-  "DAMappings": [
+  "mappings": [
     {
       "architecture_element_id": "626d2ce0-fb90-4a67-97bb-e1b63911cc67",
       "dst_element_id": "fasdfasf-684e-40b2-9494-aadec45fb2a4"
