@@ -57,7 +57,8 @@ class TranslationServiceImpl(
 
         val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
         val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
-        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceDefinition(it, domainArchitectureMapping) }// + resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
+        // TODO translate Resilience Tests for activities
+        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceTestDefinition(it, domainArchitectureMapping) }// + resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
 
         val resilienceTestConfiguration = ResilienceTestConfiguration(
                 rqaDefinition.version,
@@ -81,12 +82,13 @@ class TranslationServiceImpl(
 
     }
 
-    fun nodeToEnrichedResilienceDefinition(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
+    fun nodeToEnrichedResilienceTestDefinition(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
         val system = mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId}
-        if (system?.type?.equals("Process") == true){
-            val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, system!!.operationId, system!!.processPath)
+        if (system?.type?.equals("Process") == true || system?.type?.equals("Class") == true){
+            val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, system!!.processId, system!!.processPath,  system!!.baseUrl, system!!.packageMember)
             return EnrichedResilienceTestDefinition(enrichedArtifact, resilienceTestDefinition.description, resilienceTestDefinition.stimulus, resilienceTestDefinition.responseMeasures)
         }
+
         throw RuntimeException("Something went very wrong")
     }
 
