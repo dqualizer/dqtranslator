@@ -70,48 +70,4 @@ class MessageController (private val translationService: TranslationService,
             }
         }
     }
-
-    @PostMapping("/translate/hardcoded")
-    fun translateHardCodedRqaDefinition() {
-        log.info("RqaDefinitionReceiver received order to translate hardcoded RQA Definition. Starting now...")
-
-        val artifact = Artifact("MyComputer", null)
-        val resilienceStimulus = UnavailabilityStimulus(100)
-        val responseMeasures = ResilienceResponseMeasures(Satisfaction.TOLERATED)
-        val resilienceTestDefinition = ResilienceTestDefinition("TestDefinition", artifact, "TestDescription", resilienceStimulus, responseMeasures)
-
-        val loadStimulus = ConstantLoadStimulus(BaseLoad.LOW)
-        loadStimulus.loadProfile = LoadProfile.CONSTANT_LOAD
-        val scenario = Scenario()
-        scenario.setName("testScenario")
-        scenario.setPath("http://localhost:3000/")
-        val pathVariable = io.github.dqualizer.dqlang.types.dam.PathVariable("testPathVar", listOf(scenario))
-        val parametrization = Parametrization(setOf(pathVariable), setOf(), setOf(), Payload())
-        val loadResponseMeasures = ResponseMeasures(Satisfaction.TOLERATED)
-        val loadTestDefinition = LoadTestDefinition("TestDefinition", artifact, "TestDescription", loadStimulus, parametrization, loadResponseMeasures, setOf(ResultMetrics.RESPONSE_TIME))
-
-
-        val runtimeQualityAnalysis = RuntimeQualityAnalysis()
-        runtimeQualityAnalysis.loadtests.add(loadTestDefinition)
-        runtimeQualityAnalysis.resilienceTests.add(resilienceTestDefinition)
-        val rqaDefinition = RuntimeQualityAnalysisDefinition("A testing rqaDef", "1", Environment.DEV, "Computer work station", "Using a password manager", runtimeQualityAnalysis)
-       // val objectMapper = ObjectMapper()
-       // objectMapper.writeValue(File("C:\\Users\\HenningMöllers\\Downloads\\rqaDef.json"), rqaDefinition)
-
-
-        runBlocking {
-
-            if(rqaDefinition.runtimeQualityAnalysis.resilienceTests.isNotEmpty()){
-                val resilienceTestConfig = translationService.translateRqaDefToResilienceTestConfig(rqaDefinition)
-                log.info(resilienceTestConfig.enrichedResilienceTestDefinitions.toString())
-                rqaConfigurationProducer.produceResilienceTestConfig(resilienceTestConfig)
-            }
-
-            if (rqaDefinition.runtimeQualityAnalysis.loadtests.isNotEmpty()){
-                val loadTestConfig = translationService.translateRqaDefToLoadTestConfig(rqaDefinition)
-                log.info(loadTestConfig.loadTestArtifacts.toString())
-                rqaConfigurationProducer.produceLoadtestConfig(loadTestConfig)
-            }
-        }
-    }
 }
