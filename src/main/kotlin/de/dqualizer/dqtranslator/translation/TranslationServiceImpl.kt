@@ -57,8 +57,7 @@ class TranslationServiceImpl(
 
         val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
         val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
-        // TODO translate Resilience Tests for activities
-        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceTestDefinition(it, domainArchitectureMapping) }// + resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
+        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceTestDefinition(it, domainArchitectureMapping) } + resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
 
         val resilienceTestConfiguration = ResilienceTestConfiguration(
                 rqaDefinition.version,
@@ -102,15 +101,21 @@ class TranslationServiceImpl(
                 )
     }
 
-    /*fun edgeToResilienceTest(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
+    fun edgeToResilienceTest(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
+        val systemIdFromTestDefinition = resilienceTestDefinition.artifact.systemId
+        val activityIdFromTestDefinition = resilienceTestDefinition.artifact.activityId
+        val systemMappingWithActivityToTest = mapping.systems.firstOrNull { system ->  system.id == systemIdFromTestDefinition && system.activities.any {it.id == activityIdFromTestDefinition}}
+        val activityMapping = systemMappingWithActivityToTest?.activities?.firstOrNull { it.id == activityIdFromTestDefinition}
+        val packageMemberForActivity = systemMappingWithActivityToTest!!.packageMember + "." + (activityMapping?.operationId)
+        val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact,null, null,  systemMappingWithActivityToTest!!.baseUrl, packageMemberForActivity)
+
         return EnrichedResilienceTestDefinition(
-                resilienceTestDefinition.artifact,
+                enrichedArtifact,
                 resilienceTestDefinition.description,
                 resilienceTestDefinition.stimulus,
-                resilienceTestDefinition.responseMeasures,
-                resilienceTestDefinition.getEndpoint(mapping)
+                resilienceTestDefinition.responseMeasures
         )
-    }*/
+    }
 
     private fun LoadTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
         return mapping.systems.firstOrNull { it.id == this.artifact.systemId }
