@@ -119,13 +119,6 @@ class TranslationServiceImpl(
                 ?: throw RuntimeException("Something went very wrong")
     }
 
-    private fun ResilienceTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): Endpoint {
-        return mapping.systems.firstOrNull { it.id == this.artifact.systemId }
-                ?.activities?.firstOrNull { it.id == this.artifact.activityId }
-                ?.endpoint
-                ?: throw RuntimeException("Something went very wrong")
-    }
-
     private fun DomainArchitectureMapping.getEndpoint(environment: String): String {
         return this.serverInfos.firstOrNull { it.environment == environment }?.host
                 ?: throw EnvironmentNotFoundException(environment)
