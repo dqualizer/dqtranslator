@@ -34,6 +34,8 @@ class TranslationServiceImpl(
             loadTestConfiguration.endpoint.payloads = ArrayList()
             }
         val loadtestConfiguration = LoadTestConfiguration(
+                rqaDefinition.id,
+                rqaDefinition.domainId,
                 rqaDefinition.version,
                 rqaDefinition.context,
                 rqaDefinition.environment.toString(),

@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val dqlangVersion = "2.0.36-backmapping-SNAPSHOT";
+
 plugins {
 	id("org.springframework.boot") version "3.0.5"
 	id("io.spring.dependency-management") version "1.1.0"
@@ -9,7 +11,6 @@ plugins {
 
 	id("net.researchgate.release") version "3.0.2"
 	id("maven-publish")
-
 }
 
 group = "de.dqualizer"
@@ -48,25 +49,28 @@ configurations {
 
 repositories {
 	mavenCentral()
-	 maven {
-		 name="gpr"
-		url = uri("https://maven.pkg.github.com/dqualizer/dqlang")
-		credentials(PasswordCredentials::class)
-	 }
+		maven {
+			name="gpr"
+			url = uri("https://maven.pkg.github.com/dqualizer/dqlang")
+			credentials(PasswordCredentials::class)
+		}
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-	implementation("io.github.dqualizer:dqlang:2.0.16")
+	implementation("io.github.dqualizer:dqlang:$dqlangVersion")
 	implementation("io.ktor:ktor-client-core:2.3.3")
 	implementation("io.ktor:ktor-client-cio:2.3.3")
 	implementation("io.ktor:ktor-client-logging:2.3.3")
-
+	implementation("com.influxdb:influxdb-client-java:7.0.0")
+	implementation("com.influxdb:influxdb-spring:7.0.0")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 }
 
 tasks.withType<KotlinCompile> {

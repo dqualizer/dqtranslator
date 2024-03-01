@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class RQAConfigurationProducer(
-        val template: RabbitTemplate,
-        val messageConverter: MessageConverter
+    val template: RabbitTemplate,
+    val messageConverter: MessageConverter
 ) {
 
     @Value("\${dqualizer.messaging.queues.rqaConfigurationProducerQueue.name}")
@@ -19,7 +19,7 @@ class RQAConfigurationProducer(
 
 
     fun produce(loadtestConfiguration: LoadTestConfiguration) {
-        val message = messageConverter.toMessage(loadtestConfiguration,MessageProperties().apply {  })
+        val message = messageConverter.toMessage(loadtestConfiguration, MessageProperties().apply { })
         template.convertAndSend(producerQueueRoutingKey, message)
     }
 }
