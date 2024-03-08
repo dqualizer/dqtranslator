@@ -100,9 +100,15 @@ class TranslationServiceImpl(
     fun edgeToResilienceTest(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
         val systemIdFromTestDefinition = resilienceTestDefinition.artifact.systemId
         val activityIdFromTestDefinition = resilienceTestDefinition.artifact.activityId
-        val systemMappingWithActivityToTest = mapping.systems.firstOrNull { system ->  system.id == systemIdFromTestDefinition && system.activities.any {it.id == activityIdFromTestDefinition}}
+        val systemMappingWithActivityToTest = mapping.systems.first { system ->  system.id == systemIdFromTestDefinition && system.activities.any {it.id == activityIdFromTestDefinition}}
         val activityMapping = systemMappingWithActivityToTest?.activities?.firstOrNull { it.id == activityIdFromTestDefinition}
-        val packageMemberForActivity = systemMappingWithActivityToTest!!.packageMember + "." + (activityMapping?.operationId)
+        val packageMemberForActivity: String
+        if (systemMappingWithActivityToTest?.packageMember != null){
+            packageMemberForActivity = systemMappingWithActivityToTest.packageMember + "." + (activityMapping?.operationId)
+        } else{
+            packageMemberForActivity = activityMapping!!.operationId
+        }
+
         val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact,null, null,  systemMappingWithActivityToTest!!.baseUrl, packageMemberForActivity)
 
         return EnrichedResilienceTestDefinition(
