@@ -1,5 +1,5 @@
 {
-  "$schema": "./../schema.json",
+  "$schema": "./../schemas/dam_schema.json",
   "id": "af6a8837-7e4c-40b2-9494-aadec45fb2a4",
   "software_system": {
     "name": "Instrumentation Mock",
@@ -71,13 +71,13 @@
     "actors": [
       {
         "id": "f3e3e3e3-7e4c-40b2-9494-aadec45fb2a4",
-        "person_name": "Petra",
+        "name": "Petra",
         "_class": "io.github.dqualizer.dqlang.types.dam.domainstory.Person",
         "@type": "Person"
       },
       {
         "id": "fasdfasf-684e-40b2-9494-aadec45fb2a4",
-        "system_name": "Assignment Service",
+        "name": "Assignment Service",
         "_class": "io.github.dqualizer.dqlang.types.dam.domainstory.System",
         "@type": "System"
       }
@@ -132,10 +132,8 @@
       "@type": "SystemToComponentMapping"
     },
     {
-      "architecture_element_id": "06b0897c-2f02-4519-af3c-cf487fd60362",
-      "dst_element_id": "6f066acc-25c3-4c81-8cba-0b2209da3901",
-      "work_object_id": "680a0aad-546a-4baa-a3ee-55dc491ad76a",
-      "code_component_id": "b0c8d460-ea74-4163-a463-f4a7aa1f3808",
+      "code_component_id": "06b0897c-2f02-4519-af3c-cf487fd60362",
+      "value_object_id": "6f066acc-25c3-4c81-8cba-0b2209da3901",
       "@type": "ValueObjectToTypeMapping"
     },
     {

@@ -61,14 +61,14 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
         dam: DomainArchitectureMapping
     ): Map<String, Set<Instrument>> {
 
-        val mappingTarget = mapping.getArchitectureEntity(dam.softwareSystem)
+        val mappingTarget = dam.softwareSystem.findArchitectureEntity(mapping.architectureElementId).orElseThrow()
         when (mappingTarget) {
             is CodeComponent -> {
-                return createInstrumentFromCodeComponent(mappingTarget, dam, monitoring)
+                return createInstrumentForCodeComponent(mappingTarget, dam, monitoring)
             }
 
             else -> {
-                throw IllegalArgumentException("Mapping target is not a CodeComponent")
+                throw IllegalArgumentException("Mapping target '%s' is not a CodeComponent but of type ${mappingTarget.javaClass}".format(mappingTarget.id))
             }
         }
     }
@@ -77,16 +77,16 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
         return ActivityToCallMapping::class.java
     }
 
-    fun createInstrumentFromCodeComponent(
-        codeComponent: CodeComponent,
+    fun createInstrumentForCodeComponent(
+        mappingTarget: CodeComponent,
         domainArchitectureMapping: DomainArchitectureMapping,
         monitoringDefinition: MonitoringDefinition
     ): Map<String, Set<Instrument>> {
 
         val service =
-            domainArchitectureMapping.softwareSystem.services.find { it.codeComponents.contains(codeComponent) }!!
+            domainArchitectureMapping.softwareSystem.services.find { it.codeComponents.contains(mappingTarget) }!!
 
-        val location = InstrumentLocation(codeComponent.file, codeComponent.identifier)
+        val location = InstrumentLocation(mappingTarget.file, mappingTarget.identifier)
 
         val instrumentType = when (monitoringDefinition.measurementType) {
             MeasurementType.EXECUTION_TIME -> InstrumentType.GAUGE
@@ -114,6 +114,7 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
             instrumentType,
             monitoringDefinition.measurementType,
             monitoringDefinition.measurementUnit,
+            mappingTarget.id,
             location
         )
 

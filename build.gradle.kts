@@ -1,14 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "3.2.1"
-
 	kotlin("jvm") version "1.9.10"
 	kotlin("plugin.spring") version "1.9.10"
-	kotlin("plugin.serialization") version "1.9.10"
+
+	id("org.springframework.boot") version "3.2.3"
+	id("io.spring.dependency-management") version "1.1.4"
 
 	id("net.researchgate.release") version "3.0.2"
 	id("maven-publish")
+	id("idea")
+	id("eclipse")
 }
 
 group = "io.github.dqualizer"
@@ -62,15 +64,15 @@ dependencies {
 	implementation(platform("org.springframework.boot:spring-boot-dependencies:3.2.1"))
 
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
-//	implementation("io.github.dqualizer:dqlang:3.0.0-SNAPSHOT"){
-//		isChanging = true
-//	}
-	implementation(project(":dqlang"))
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+
+	implementation("io.github.dqualizer:dqlang:3.0.0-merge_dam-SNAPSHOT")
+//    implementation(project(":dqlang"))
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
@@ -78,6 +80,11 @@ dependencies {
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 	//assertJ
 	testImplementation("org.assertj:assertj-core:3.24.2")
+
+	//testcontainers
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:rabbitmq")
 }
 
 tasks.withType<KotlinCompile> {

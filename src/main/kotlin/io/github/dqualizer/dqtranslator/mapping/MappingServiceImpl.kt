@@ -1,6 +1,7 @@
 package io.github.dqualizer.dqtranslator.mapping
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.dqualizer.dqlang.data.DAMRepository
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 import io.github.dqualizer.dqtranslator.ContextNotFoundException
 import org.slf4j.LoggerFactory
@@ -13,21 +14,28 @@ import java.util.*
 @Service
 class MappingServiceImpl(
     private val objectMapper: ObjectMapper,
-    private val resourceLoader: ResourceLoader
+    private val resourceLoader: ResourceLoader,
+    private val DAMStore: DAMRepository
 ) : MappingService {
     private val log = LoggerFactory.getLogger(MappingServiceImpl::class.java)
 
     @Value("\${dqualizer.mappingDirectory}")
     private lateinit var mappingDirectory: String
 
-    override fun getDAMByContext(context: String): DomainArchitectureMapping {
-        log.info("Trying to load context=$context from directory=classpath:$mappingDirectory")
+    override fun getDAMByContext(contextID: String): DomainArchitectureMapping {
+
+        if (DAMStore.contains(contextID)) {
+            log.info("Found context=$contextID in cache")
+            return DAMStore.getDAMByID(contextID)
+        }
+
+        log.info("Trying to load context=$contextID from directory=classpath:$mappingDirectory")
 
         return ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
             .getResources("classpath:$mappingDirectory/*.json")
             .map { it.inputStream.bufferedReader().readText() }
             .map { objectMapper.readValue(it, DomainArchitectureMapping::class.java) }
-            .firstOrNull { it.id == context } ?: throw ContextNotFoundException(context)
+            .firstOrNull { it.id == contextID } ?: throw ContextNotFoundException(contextID)
     }
 
     /**

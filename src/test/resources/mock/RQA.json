@@ -1,0 +1,30 @@
+{
+  "$schema": "./../schemas/rqa_schema.json",
+  "id": "ee5237bd-4f3c-4a6c-a0eb-c9615465dfcd",
+  "name": "Example RQA",
+  "environment": "DEV",
+  "context": "af6a8837-7e4c-40b2-9494-aadec45fb2a4",
+  "domain_id": "af6a8837-7e4c-40b2-9494-aadec45fb2a4",
+  "version": "0.0.1",
+  "runtime_quality_analysis": {
+    "loadtests": [],
+    "resilience_definition": [],
+    "monitoring_definition": [
+      {
+        "id": "63cf2522-bed9-4a92-bc54-542c43c60c38",
+        "target": "Activity 5",
+        "measurement_name": "MasterDataFiscalYearDataLength",
+        "measurement_type": "VALUE_INSPECTION",
+        "measurement_unit": "",
+        "inspected_value": "Masterdata.Length"
+      },
+      {
+        "id": "538e6899-55c4-42bb-86c7-97a21f76ada7",
+        "target": "Activity 5",
+        "measurement_name": "MasterDataSearchExecutionTime",
+        "measurement_type": "EXECUTION_TIME",
+        "measurement_unit": "ms"
+      }
+    ]
+  }
+}
