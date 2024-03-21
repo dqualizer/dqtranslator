@@ -6,7 +6,7 @@ ARG GITHUB_USER
 
 # Token used in local builds to access github packages
 # or GITHUB_TOKEN in CI
-ARG GITHUB_PACKAGE_READ_TOKEN
+ARG GITHUB_TOKEN
 
 
 FROM --platform=$BUILDPLATFORM gradle:8-alpine AS builder-base-image
@@ -16,43 +16,25 @@ WORKDIR /app
 COPY . .
 
 
-
 ### ----------- Builder CI ----------- ###
 FROM builder-base-image as ci-builder
-ARG GITHUB_PACKAGE_READ_TOKEN
-ENV GITHUB_TOKEN=$GITHUB_PACKAGE_READ_TOKEN
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
 
 
 ### ----------- Builder LOCAL ----------- ###
 FROM builder-base-image as local-builder
 ARG GITHUB_USER
-ARG GITHUB_PACKAGE_READ_TOKEN
+ENV GITHUB_USER=$GITHUB_USER
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
 
 # ensure envsubst
 RUN apk update && apk add gettext
 
-# enable dqlang access
-RUN cd gradle \
-  && echo $' allprojects {\n\
-  repositories {\n\
-  maven {\n\
-  url =  uri("https://maven.pkg.github.com/io.github.dqualizer.dqlang")\n\
-  credentials {\n\
-  username = "$GITHUB_USER"\n\
-  password = "$GITHUB_PACKAGE_READ_TOKEN"\n\
-  }\n\
-  }\n\
-  }\n\
-  } ' > init.gradle \
-  && tmpfile=$(mktemp) \
-  && envsubst < init.gradle > $tmpfile \
-  && mv -f $tmpfile init.gradle
-
-
 ### ----------- Builder Resolver and Executor ----------- ###
 FROM ${EXECUTION_ENV}-builder as build-executor
-RUN gradle --init-script gradle/init.gradle assemble
-
+RUN gradle -PgprPassword=$GITHUB_TOKEN -PgprUsername=$GITHUB_USER assemble --no-daemon
 
 #### ----------- Runner Definiton ----------- ###
 FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre-alpine
@@ -61,7 +43,7 @@ FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre-alpine
 WORKDIR /app
 
 # Copy the jar file from the build stage
-COPY --from=build-executor /app/build/libs/*.jar /app/dqtransaltor.jar
+COPY --from=build-executor /app/build/libs/*.jar /app/dqtranslator.jar
 
 RUN wget -O ./opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.26.0/opentelemetry-javaagent.jar
 
@@ -69,4 +51,4 @@ RUN wget -O ./opentelemetry-javaagent.jar https://github.com/open-telemetry/open
 EXPOSE 8080
 
 # Run the jar file
-CMD ["java","-javaagent:opentelemetry-javaagent.jar", "-jar", "dqtransaltor.jar"]
+CMD ["java","-javaagent:opentelemetry-javaagent.jar", "-jar", "dqtranslator.jar"]
