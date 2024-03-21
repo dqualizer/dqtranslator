@@ -52,6 +52,11 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "gpr"
+        url = uri("https://maven.pkg.github.com/dqualizer/dqlang")
+        credentials(PasswordCredentials::class)
+    }
 }
 
 configurations.all {
