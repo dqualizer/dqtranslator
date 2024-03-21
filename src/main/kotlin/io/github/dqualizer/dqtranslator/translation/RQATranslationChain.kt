@@ -18,7 +18,7 @@ class RQATranslationChain {
     }
 
     fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition): RQAConfiguration {
-        var loadTestConfig = RQAConfiguration()
+        var loadTestConfig = RQAConfiguration(context = rqaDefinition.context)
         for (translator in translators) {
             loadTestConfig = translator.translate(rqaDefinition, loadTestConfig)
         }

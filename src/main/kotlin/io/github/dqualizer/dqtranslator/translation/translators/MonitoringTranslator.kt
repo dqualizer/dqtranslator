@@ -1,13 +1,13 @@
 package io.github.dqualizer.dqtranslator.translation.translators
 
+import io.github.dqualizer.dqlang.data.DAMMongoRepository
 import io.github.dqualizer.dqlang.types.dam.domainstory.DSTElement
-import io.github.dqualizer.dqlang.types.dam.mapping.*
+import io.github.dqualizer.dqlang.types.dam.mapping.DAMapper
 import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
 import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.MonitoringConfiguration
 import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.ServiceMonitoringConfiguration
 import io.github.dqualizer.dqlang.types.rqa.configuration.monitoring.instrumentation.Instrument
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
-import io.github.dqualizer.dqtranslator.mapping.MappingServiceImpl
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import io.github.dqualizer.dqtranslator.translation.translators.monitoring.MonitoringTranslators
 import org.springframework.stereotype.Service
@@ -18,7 +18,7 @@ import java.util.regex.Pattern
  */
 @Service
 class MonitoringTranslator(
-    val mappingService: MappingServiceImpl
+    val damRepo: DAMMongoRepository
 ) : RQATranslator {
 
     val log = org.slf4j.LoggerFactory.getLogger(javaClass)
@@ -41,7 +41,8 @@ class MonitoringTranslator(
             return target
         }
 
-        val dam = mappingService.getDAMByContext(rqaDefinition.domainId)
+        val dam = damRepo.findById(rqaDefinition.domainId)
+            .orElseThrow { NoSuchElementException("No DAM found with id ${rqaDefinition.domainId}") }
         val mapper = DAMapper(dam, false)
 
         val serviceInstrumentes = mutableMapOf<String, MutableSet<Instrument>>()
@@ -70,7 +71,7 @@ class MonitoringTranslator(
 
         val serviceMonitoringConfigurations = serviceInstrumentes.mapValues { (serviceName, instruments) ->
             ServiceMonitoringConfiguration(
-                dam.softwareSystem.findServiceByName(serviceName).get().id,
+                dam.softwareSystem.findServiceByName(serviceName).get().id!!,
                 instruments.toSet(),
                 serviceMonitoringFrameworks[serviceName]!!
             )

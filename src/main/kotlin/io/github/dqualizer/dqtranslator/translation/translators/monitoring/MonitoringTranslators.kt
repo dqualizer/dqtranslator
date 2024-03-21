@@ -61,7 +61,7 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
         dam: DomainArchitectureMapping
     ): Map<String, Set<Instrument>> {
 
-        val mappingTarget = dam.softwareSystem.findArchitectureEntity(mapping.architectureElementId).orElseThrow()
+        val mappingTarget = dam.softwareSystem.findArchitectureEntity(mapping.architectureElementId!!).orElseThrow()
         when (mappingTarget) {
             is CodeComponent -> {
                 return createInstrumentForCodeComponent(mappingTarget, dam, monitoring)
@@ -114,7 +114,7 @@ private object ActivityToCallTranslator : MonitoringTranslator<ActivityToCallMap
             instrumentType,
             monitoringDefinition.measurementType,
             monitoringDefinition.measurementUnit,
-            mappingTarget.id,
+            mappingTarget.id!!,
             location
         )
 

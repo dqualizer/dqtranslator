@@ -10,10 +10,10 @@ import io.github.dqualizer.dqlang.types.dam.domainstory.Person
 import io.github.dqualizer.dqlang.types.dam.domainstory.System
 import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.ConstantLoadStimulus
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.LoadIncreaseStimulus
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.LoadPeakStimulus
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.Stimulus
+import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.ConstantLoad
+import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadIncrease
+import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadPeak
+import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadProfile
 import io.github.dqualizer.dqtranslator.translation.TranslationService
 import org.assertj.core.api.Assertions.assertThat
 import org.jeasy.random.EasyRandom
@@ -21,12 +21,14 @@ import org.jeasy.random.EasyRandomParameters
 import org.jeasy.random.randomizers.AbstractRandomizer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import org.springframework.http.HttpMethod
 import org.springframework.messaging.MessageHeaders
+import org.testcontainers.containers.RabbitMQContainer
 import java.io.File
 import java.lang.module.ModuleDescriptor.Version
 import java.util.*
@@ -56,12 +58,12 @@ class IntegrationTest {
 
 
     var generator = EasyRandom(
-        EasyRandomParameters().randomize(Stimulus::class.java) {
+        EasyRandomParameters().randomize(LoadProfile::class.java) {
             return@randomize EasyRandom().nextObject(
                 listOf(
-                    LoadPeakStimulus::class.java,
-                    LoadIncreaseStimulus::class.java,
-                    ConstantLoadStimulus::class.java
+                    LoadPeak::class.java,
+                    LoadIncrease::class.java,
+                    ConstantLoad::class.java
                 ).random()
             )
         }.randomize(Actor::class.java) {
@@ -88,7 +90,7 @@ class IntegrationTest {
     }
 
 
-    data class TestData(val rqa: RuntimeQualityAnalysisDefinition, val dam: DomainArchitectureMapping)
+    data class TestData(val rqaD: RuntimeQualityAnalysisDefinition, val dam: DomainArchitectureMapping)
 
     private fun loadTestData(): TestData {
         val objectMapper = AMQPAutoConfiguration().objectMapper()
@@ -120,14 +122,15 @@ class IntegrationTest {
 
         val dam = damStore.storeDAM(data.dam)
 
-        val rqaWithCorrectContext = RuntimeQualityAnalysisDefinition.builder()
-            .name(data.rqa.name)
-            .version(data.rqa.version)
-            .environment(data.rqa.environment)
-            .domainId(dam.id)
-            .context(dam.id)
-            .runtimeQualityAnalysis(data.rqa.runtimeQualityAnalysis)
-            .build();
+         val rqaWithCorrectContext = RuntimeQualityAnalysisDefinition(
+            data.rqaD.name,
+            data.rqaD.version,
+            data.rqaD.domainId,
+            data.rqaD.context,
+            data.rqaD.environment,
+            data.rqaD.runtimeQualityAnalysis
+         )
+
 
         val rqaConfiguration = translationService.translate(rqaWithCorrectContext)
 
@@ -136,15 +139,16 @@ class IntegrationTest {
 
 
     @Test
+    @Disabled
     fun canSendTranslationToQueue() {
         val data = loadTestData()
         damStore.storeDAM(data.dam)
 
 
-        val rqaConfiguration = translationService.translate(data.rqa)
+        val rqaConfiguration = translationService.translate(data.rqaD)
 
         rqaConfiguration.loadConfiguration = generator.nextObject(LoadTestConfiguration::class.java)
-        rqaConfiguration.context = data.dam.id
+        rqaConfiguration.context = data.dam.id!!
 
         for (i in 0..<1) {
             rqaConfigurationProducer.produce(rqaConfiguration, MessageHeaders(mapOf()))

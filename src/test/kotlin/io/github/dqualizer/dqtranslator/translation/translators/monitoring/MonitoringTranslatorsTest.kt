@@ -28,9 +28,9 @@ class MonitoringTranslatorsTest {
 
         var monitoringDefintions = random.objects(MonitoringDefinition::class.java, 3).toList()
 
-        monitoringDefintions[0].target = dam.domainStory.activities[0].id
-        monitoringDefintions[1].target = dam.domainStory.activities[1].id
-        monitoringDefintions[2].target = dam.domainStory.actors[2].id
+        monitoringDefintions[0].target = dam.domainStory.activities[0].id!!
+        monitoringDefintions[1].target = dam.domainStory.activities[1].id!!
+        monitoringDefintions[2].target = dam.domainStory.actors[2].id!!
 
 
         val instruments: MutableMap<String, Set<Instrument>> = mutableMapOf()
@@ -65,41 +65,41 @@ class MonitoringTranslatorsTest {
                 "Activity3",
                 "publishes",
                 3,
-                setOf(actorsAndWorkObjects[0].id),
+                setOf(actorsAndWorkObjects[0].id!!),
                 setOf(),
-                setOf(actorsAndWorkObjects[5].id)
+                setOf(actorsAndWorkObjects[5].id!!)
             ),
             Activity(
                 "Activity4",
                 "receives",
                 4,
-                setOf(actorsAndWorkObjects[1].id),
+                setOf(actorsAndWorkObjects[1].id!!),
                 setOf(),
-                setOf(actorsAndWorkObjects[5].id)
+                setOf(actorsAndWorkObjects[5].id!!)
             ),
             Activity(
                 "Activity5",
                 "requests",
                 5,
-                setOf(actorsAndWorkObjects[1].id),
-                setOf(actorsAndWorkObjects[2].id),
-                setOf(actorsAndWorkObjects[3].id)
+                setOf(actorsAndWorkObjects[1].id!!),
+                setOf(actorsAndWorkObjects[2].id!!),
+                setOf(actorsAndWorkObjects[3].id!!)
             ),
             Activity(
                 "Activity6",
                 "searches",
                 6,
-                setOf(actorsAndWorkObjects[2].id),
+                setOf(actorsAndWorkObjects[2].id!!),
                 setOf(),
-                setOf(actorsAndWorkObjects[3].id)
+                setOf(actorsAndWorkObjects[3].id!!)
             ),
             Activity(
                 "Activity7",
                 "saves",
                 7,
-                setOf(actorsAndWorkObjects[1].id),
+                setOf(actorsAndWorkObjects[1].id!!),
                 setOf(),
-                setOf(actorsAndWorkObjects[5].id)
+                setOf(actorsAndWorkObjects[5].id!!)
             ),
         ).map { it.apply { id = it.name } }
 
