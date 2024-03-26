@@ -82,14 +82,16 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
     testImplementation("org.jeasy:easy-random-core:5.0.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.0")
     //assertJ
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.assertj:assertj-core:3.25.2")
+    testImplementation("com.github.fridujo:rabbitmq-mock:1.2.0")
 
     //testcontainers
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:rabbitmq")
+    testImplementation("org.testcontainers:mongodb")
 }
 
 tasks.withType<KotlinCompile> {

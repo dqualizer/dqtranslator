@@ -1,6 +1,5 @@
 package io.github.dqualizer.dqtranslator.messaging
 
-import io.github.dqualizer.dqlang.data.DAMMongoRepository
 import io.github.dqualizer.dqlang.data.DAMRepository
 import io.github.dqualizer.dqlang.messaging.AMQPAutoConfiguration
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
@@ -21,13 +20,12 @@ import org.jeasy.random.EasyRandomParameters
 import org.jeasy.random.randomizers.AbstractRandomizer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import org.springframework.http.HttpMethod
 import org.springframework.messaging.MessageHeaders
+import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.RabbitMQContainer
 import java.io.File
 import java.lang.module.ModuleDescriptor.Version
@@ -41,8 +39,22 @@ class VersionRandomizer : AbstractRandomizer<Version>() {
 
 
 @SpringBootTest
-@EnableMongoRepositories(basePackageClasses = [DAMMongoRepository::class])
 class IntegrationTest {
+
+    companion object {
+        @JvmStatic
+        @BeforeAll
+        fun setUp() {
+
+            val rabbit = RabbitMQContainer("rabbitmq:management-alpine")
+            rabbit.portBindings = listOf("5672:5672", "15672:15672")
+            rabbit.start()
+
+            val mongoDBContainer = MongoDBContainer("mongo:7")
+            mongoDBContainer.portBindings = listOf("27017:27017")
+            mongoDBContainer.start()
+        }
+    }
 
     @Autowired
     lateinit var translationService: TranslationService
@@ -52,10 +64,6 @@ class IntegrationTest {
 
     @Autowired
     lateinit var damStore: DAMRepository
-
-    @Autowired
-    lateinit var damRepository: DAMMongoRepository
-
 
     var generator = EasyRandom(
         EasyRandomParameters().randomize(LoadProfile::class.java) {
@@ -120,16 +128,16 @@ class IntegrationTest {
     fun canTranslateTestData() {
         val data = loadTestData()
 
-        val dam = damStore.storeDAM(data.dam)
+        damStore.storeDAM(data.dam)
 
-         val rqaWithCorrectContext = RuntimeQualityAnalysisDefinition(
+        val rqaWithCorrectContext = RuntimeQualityAnalysisDefinition(
             data.rqaD.name,
             data.rqaD.version,
             data.rqaD.domainId,
             data.rqaD.context,
             data.rqaD.environment,
             data.rqaD.runtimeQualityAnalysis
-         )
+        )
 
 
         val rqaConfiguration = translationService.translate(rqaWithCorrectContext)
@@ -139,7 +147,6 @@ class IntegrationTest {
 
 
     @Test
-    @Disabled
     fun canSendTranslationToQueue() {
         val data = loadTestData()
         damStore.storeDAM(data.dam)
@@ -155,16 +162,6 @@ class IntegrationTest {
         }
 
         assertThat(rqaConfiguration).isNotNull
-    }
-
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun setUp(): Unit {
-//            val rabbit = RabbitMQContainer("rabbitmq:management-alpine")
-//            rabbit.portBindings = listOf("5672:5672", "15672:15672")
-//            rabbit.start()
-        }
     }
 }
 
