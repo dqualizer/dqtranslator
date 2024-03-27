@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class TranslationServiceImpl(
-    private val mappingService: MappingService
+        private val mappingService: MappingService
 ) : TranslationService {
     private val log = LoggerFactory.getLogger(TranslationService::class.java)
 
@@ -31,7 +31,8 @@ class TranslationServiceImpl(
 
         // Artifact will always be an Edge...
         val (loadTestsForSystems, loadTestsForActivities) = loadTestDefinition.partition { it.artifact.activityId == null }
-        val loadTestConfigurations = loadTestsForSystems.map { nodeToLoadTest(it, domainArchitectureMapping) }.flatten() + loadTestsForActivities.map { edgeToLoadTest(it, domainArchitectureMapping) }
+        val loadTestConfigurations = loadTestsForSystems.map { nodeToLoadTest(it, domainArchitectureMapping) }.flatten() +
+                loadTestsForActivities.map { edgeToLoadTest(it, domainArchitectureMapping) }
 
         val loadtestConfiguration = LoadTestConfiguration(
                 rqaDefinition.version,
@@ -53,7 +54,8 @@ class TranslationServiceImpl(
 
         val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
         val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
-        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceTestDefinition(it, domainArchitectureMapping) } + resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
+        val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map { nodeToEnrichedResilienceTestDefinition(it, domainArchitectureMapping) } +
+                resilienceTestDefinitionsForActivities.map { edgeToResilienceTest(it, domainArchitectureMapping) }
 
         val resilienceTestConfiguration = ResilienceTestConfiguration(
                 rqaDefinition.version,
@@ -78,10 +80,14 @@ class TranslationServiceImpl(
     }
 
     fun nodeToEnrichedResilienceTestDefinition(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
-        val system = mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId}
-        if (system?.type?.equals("Process") == true || system?.type?.equals("Class") == true){
-            val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, system!!.processId, system!!.processPath,  system!!.baseUrl, system!!.packageMember)
-            return EnrichedResilienceTestDefinition(enrichedArtifact, resilienceTestDefinition.description, resilienceTestDefinition.stimulus, resilienceTestDefinition.responseMeasures)
+        val system = mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId }
+        if (system?.type?.equals("Process") == true || system?.type?.equals("Class") == true) {
+            val enrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, system!!.processId, system!!.processPath, system!!.baseUrl, system!!.packageMember)
+            return EnrichedResilienceTestDefinition(
+                    enrichedArtifact,
+                    resilienceTestDefinition.description,
+                    resilienceTestDefinition.stimulus,
+                    resilienceTestDefinition.responseMeasures)
         }
 
         throw RuntimeException("Something went very wrong")
@@ -94,18 +100,18 @@ class TranslationServiceImpl(
                 loadtestSpec.stimulus,
                 loadtestSpec.responseMeasures,
                 loadtestSpec.getEndpoint(mapping)
-                )
+        )
     }
 
     fun edgeToResilienceTest(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
         val systemIdFromTestDefinition = resilienceTestDefinition.artifact.systemId
         val activityIdFromTestDefinition = resilienceTestDefinition.artifact.activityId
-        val systemMappingWithActivityToTest = mapping.systems.first { system ->  system.id == systemIdFromTestDefinition && system.activities.any {it.id == activityIdFromTestDefinition}}
-        val activityMapping = systemMappingWithActivityToTest?.activities?.firstOrNull { it.id == activityIdFromTestDefinition}
+        val systemMappingWithActivityToTest = mapping.systems.first { system -> system.id == systemIdFromTestDefinition && system.activities.any { it.id == activityIdFromTestDefinition } }
+        val activityMapping = systemMappingWithActivityToTest?.activities?.firstOrNull { it.id == activityIdFromTestDefinition }
         val packageMemberForActivity = activityMapping!!.operationId
 
 
-        val enrichedArtifact: EnrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact,null, null,  systemMappingWithActivityToTest!!.baseUrl, packageMemberForActivity)
+        val enrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, null, null, systemMappingWithActivityToTest!!.baseUrl, packageMemberForActivity)
 
         return EnrichedResilienceTestDefinition(
                 enrichedArtifact,
