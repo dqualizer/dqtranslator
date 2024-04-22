@@ -1,10 +1,15 @@
 dqualizer:
+
   messaging:
     queues: # Queues to connect to
       rqaDefinitionReceiverQueue:
         name: 'rqaDefinitionReceiver'
       rqaConfigurationProducerQueue:
         name: 'rqaConfiguration'
+
+  dqapi:
+    host: 'localhost'
+    port: '8099'
 
   mappingDirectory: 'mappings'
 

@@ -46,6 +46,9 @@ class MonitoringTranslatorsTest {
         Assertions.assertThat(true).isTrue()
     }
 
+
+
+
     fun testData(): DomainArchitectureMapping {
 
         val random = EasyRandom()

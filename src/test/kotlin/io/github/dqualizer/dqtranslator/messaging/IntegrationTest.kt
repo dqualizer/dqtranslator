@@ -13,7 +13,8 @@ import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.Cons
 import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadIncrease
 import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadPeak
 import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadProfile
-import io.github.dqualizer.dqtranslator.translation.TranslationService
+import io.github.dqualizer.dqtranslator.translation.RQATranslationChain
+import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import org.assertj.core.api.Assertions.assertThat
 import org.jeasy.random.EasyRandom
 import org.jeasy.random.EasyRandomParameters
@@ -57,7 +58,7 @@ class IntegrationTest {
     }
 
     @Autowired
-    lateinit var translationService: TranslationService
+    lateinit var translators: List<RQATranslator>
 
     @Autowired
     lateinit var rqaConfigurationProducer: RQAConfigurationProducer
@@ -140,7 +141,9 @@ class IntegrationTest {
         )
 
 
-        val rqaConfiguration = translationService.translate(rqaWithCorrectContext)
+        val rqaConfiguration = RQATranslationChain()
+            .chain(translators)
+            .translate(rqaWithCorrectContext)
 
         assertThat(rqaConfiguration).isNotNull
     }
@@ -152,7 +155,9 @@ class IntegrationTest {
         damStore.storeDAM(data.dam)
 
 
-        val rqaConfiguration = translationService.translate(data.rqaD)
+        val rqaConfiguration = RQATranslationChain()
+            .chain(translators)
+            .translate(data.rqaD)
 
         rqaConfiguration.loadConfiguration = generator.nextObject(LoadTestConfiguration::class.java)
         rqaConfiguration.context = data.dam.id!!

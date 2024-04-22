@@ -50,7 +50,6 @@ configurations {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {
         name = "gpr"
@@ -70,11 +69,15 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation("io.ktor:ktor-client-core:2.3.3")
+    implementation("io.ktor:ktor-client-cio:2.3.3")
+    implementation("io.ktor:ktor-client-logging:2.3.3")
+
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
-
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 
     implementation("io.github.dqualizer:dqlang:3.1.0-SNAPSHOT")
 //    implementation(project(":dqlang"))
