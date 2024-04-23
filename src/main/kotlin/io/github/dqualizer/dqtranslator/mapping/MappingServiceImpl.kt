@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 import io.github.dqualizer.dqtranslator.ContextNotFoundException
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.support.ResourcePatternUtils
@@ -11,9 +12,10 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
+@Deprecated("Use DAMMongoRepository instead to retrieve DAM")
 class MappingServiceImpl(
     private val objectMapper: ObjectMapper,
-    private val resourceLoader: ResourceLoader
+    @Qualifier("webApplicationContext") private val resourceLoader: ResourceLoader
 ) : MappingService {
     private val log = LoggerFactory.getLogger(MappingServiceImpl::class.java)
 

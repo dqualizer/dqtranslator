@@ -1,5 +1,6 @@
 package io.github.dqualizer.dqtranslator.translation.translators
 
+import io.github.dqualizer.dqlang.data.DAMMongoRepository
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 import io.github.dqualizer.dqlang.types.dam.architecture.RESTEndpoint
 import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
@@ -8,14 +9,13 @@ import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfi
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.LoadTestDefinition
 import io.github.dqualizer.dqtranslator.EnvironmentNotFoundException
-import io.github.dqualizer.dqtranslator.mapping.MappingServiceImpl
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class LoadTranslator(
-    val mappingService: MappingServiceImpl
+    val damRepo: DAMMongoRepository
 ) : RQATranslator {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -28,9 +28,11 @@ class LoadTranslator(
     }
 
     private fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition): LoadTestConfiguration {
-        val dam = mappingService.getDAMByContext(rqaDefinition.domainId)
+        val dam = damRepo.findById(rqaDefinition.domainId)
+            .orElseThrow { NoSuchElementException("No DAM found with id ${rqaDefinition.domainId}") }
 
         val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadTestDefinition
+        if(loadTestDefinition.isEmpty()) return LoadTestConfiguration()
 
         // Artifact will always be an Edge...
         val (systems, activities) = loadTestDefinition.partition { it.artifact?.activityId == null }
@@ -92,7 +94,7 @@ class LoadTranslator(
     private fun DomainArchitectureMapping.getEndpoint(environment: String): String {
         val services = this.softwareSystem.services
         for (service in services) {
-            val serviceInfos = service.apiSchema!!.serverInfo!!
+            val serviceInfos = service.apiSchema!!.serverInfo
             for (serviceInfo in serviceInfos) {
                 if (serviceInfo.environment == environment) {
                     return serviceInfo.host!!
