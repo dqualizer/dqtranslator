@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.9.10"
     kotlin("plugin.spring") version "1.9.10"
+	kotlin("plugin.serialization") version "1.9.0"
 
     id("org.springframework.boot") version "3.2.3"
     id("io.spring.dependency-management") version "1.1.4"
@@ -21,25 +22,23 @@ release {
     //no config needed, see https://github.com/researchgate/gradle-release for options
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/dqualizer/dqtranslator")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-        publications {
-            register("jar", MavenPublication::class) {
-                from(components["java"])
-                pom {
-                    url.set("https://github.com/dqualizer/dqtranslator.git")
-                }
-            }
-        }
-    }
+
+publishing{
+	repositories {
+		maven {
+			name = "gpr"
+			url = uri("https://maven.pkg.github.com/dqualizer/dqtranslator")
+			credentials(PasswordCredentials::class)
+		}
+		publications {
+			register("jar", MavenPublication::class) {
+				from(components["java"])
+				pom {
+					url.set("https://github.com/dqualizer/dqtranslator.git")
+				}
+			}
+		}
+	}
 }
 
 
@@ -50,22 +49,16 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        name = "gpr"
-        url = uri("https://maven.pkg.github.com/dqualizer/dqlang")
-        credentials(PasswordCredentials::class)
-    }
-}
-
-configurations.all {
-    resolutionStrategy {
-        cacheChangingModulesFor(0, "seconds")
-    }
+	mavenCentral()
+	 maven {
+		 name="gpr"
+		url = uri("https://maven.pkg.github.com/dqualizer/dqlang")
+		credentials(PasswordCredentials::class)
+	 }
 }
 
 dependencies {
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.2.1"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.2.3"))
 
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
