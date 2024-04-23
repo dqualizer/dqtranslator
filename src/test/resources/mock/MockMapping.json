@@ -17,7 +17,32 @@
         "name": "Assignement Service",
         "uri": "http://assignment-service:8080",
         "runtime_platform_id": "dockerHost1",
-        "endpoints": [],
+        "api_schema": {
+          "server_info": [
+            {
+              "host": "http://assignment-service:8080",
+              "environment": "DEV"
+            }
+          ]
+        },
+        "endpoints": [
+          {
+            "name": "endpoint-name",
+            "code_component": "71b7f3f7-bc5f-427e-803b-7dd4f389c7bb",
+            "route": "/example",
+            "methods": ["GET"],
+            "parameter": [
+                {
+                  "type": "Header",
+                  "data": "resources/header.json"
+                }
+              ],
+            "response_description": {
+              "format": "string",
+              "expected_status_codes": [200]
+            }
+          }
+        ],
         "deployment_name": "assignment-service",
         "programming_language": "Java",
         "programming_framework": {
@@ -119,9 +144,11 @@
           "680a0aad-546a-4baa-a3ee-55dc491ad76a"
         ],
         "initiators": [
-          "fasdfasf-684e-40b2-9494-aadec45fb2a4"
+          "f3e3e3e3-7e4c-40b2-9494-aadec45fb2a4"
         ],
-        "targets": []
+        "targets": [
+          "fasdfasf-684e-40b2-9494-aadec45fb2a4"
+        ]
       }
     ]
   },

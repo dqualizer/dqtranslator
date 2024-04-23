@@ -72,8 +72,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
-    implementation("io.github.dqualizer:dqlang:3.1.0-SNAPSHOT")
-//    implementation(project(":dqlang"))
+    implementation("io.github.dqualizer:dqlang:3.1.5-SNAPSHOT")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.amqp:spring-rabbit-test")

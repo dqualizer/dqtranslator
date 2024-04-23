@@ -60,8 +60,8 @@ class LoadTranslator(
         val activitiesOfSpecifiedActor = mapping.domainStory.activities.filter { it.initiators.contains(actor?.id) }
         val loadTestArtifacts = mutableListOf<LoadTestArtifact>()
         for (activity in activitiesOfSpecifiedActor) {
-            // lazy = false is ignored...
-            val endpoint = mapping.getMapper(false).mapToArchitecturalEntity(activity) as RESTEndpoint
+            // Not tested
+            val endpoint = mapping.mapper.mapToArchitecturalEntity(activity) as RESTEndpoint
             loadTestArtifacts.add(
                 LoadTestArtifact(
                     loadtestDefinition.artifact,
@@ -87,8 +87,13 @@ class LoadTranslator(
 
     private fun LoadTestDefinition.getEndpoint(mapping: DomainArchitectureMapping): RESTEndpoint {
         val actor = mapping.domainStory.actors.first { it.id == this.artifact?.systemId }
-        val activityOfSpecifiedActor = mapping.domainStory.activities.first { it.initiators.contains(actor.id) }
-        return (mapping.getMapper(false).mapToArchitecturalEntity(activityOfSpecifiedActor) as RESTEndpoint)
+
+        // use it.targets instead of it.initiators
+        // e.g. Petra (initiator) calls endpoint of service (target)
+        val activityOfSpecifiedActor = mapping.domainStory.activities.first { it.targets.contains(actor.id) }
+        val entity = mapping.mapper.mapToArchitecturalEntity(activityOfSpecifiedActor)
+
+        return mapping.softwareSystem.endpoints.first{ it.codeComponent == entity.id }
     }
 
     private fun DomainArchitectureMapping.getEndpoint(environment: String): String {

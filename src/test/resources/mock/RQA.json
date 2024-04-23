@@ -7,7 +7,62 @@
   "domain_id": "af6a8837-7e4c-40b2-9494-aadec45fb2a4",
   "version": "0.0.1",
   "runtime_quality_analysis": {
-    "loadtests": [],
+    "load_test_definition": [
+      {
+        "id": "63cf2522-bed9-4a92-bc54-242c43c70c38",
+        "name": "view contract",
+        "artifact": {
+          "system_id": "fasdfasf-684e-40b2-9494-aadec45fb2a4",
+          "activity_id": "id3"
+        },
+        "description": "Verträge ansehen",
+        "stimulus": {
+          "workload": {
+            "type": "OPEN",
+            "load_profile": {
+              "type": "constant",
+              "base_load": {
+                "type": "integer",
+                "name": "LOW"
+              },
+              "target_load": {
+                "type": "integer",
+                "name": "HIGH"
+              },
+              "duration": {
+                "type": "integer",
+                "name": "FAST"
+              }
+            }
+          },
+          "accuracy": 80
+        },
+        "parametrization": {
+          "path_variables": [
+            {
+              "name": "id",
+              "scenarios": [
+                {
+                  "name": "happy",
+                  "path": "my/data/id.json"
+                }
+              ]
+            }
+          ],
+          "url_parameter": [],
+          "request_parameter": [],
+          "payload": {}
+        },
+        "response_measure": {
+          "response_time": "SATISFIED"
+        },
+        "result_metrics": [
+          "RESPONSE_TIME",
+          "NINETY_PERCENTILE",
+          "NINETY_FIVE_PERCENTILE"
+        ]
+      }
+    ],
     "resilience_definition": [],
     "monitoring_definition": [
       {

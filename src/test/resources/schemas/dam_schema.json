@@ -338,36 +338,13 @@
                     "_class" : {
                       "type" : "string"
                     },
-                    "activities" : {
-                      "type" : "array",
-                      "items" : {
-                        "type" : "string"
-                      }
-                    },
-                    "components" : {
-                      "type" : "object"
-                    },
-                    "file" : {
+                    "code_component" : {
                       "type" : "string"
                     },
                     "id" : {
                       "type" : "string"
                     },
-                    "identifier" : {
-                      "type" : "string"
-                    },
                     "methods" : {
-                      "type" : "array",
-                      "items" : {
-                        "type" : "object",
-                        "properties" : {
-                          "name" : {
-                            "type" : "string"
-                          }
-                        }
-                      }
-                    },
-                    "myimplements" : {
                       "type" : "array",
                       "items" : {
                         "type" : "string"
@@ -375,12 +352,6 @@
                     },
                     "name" : {
                       "type" : "string"
-                    },
-                    "objects" : {
-                      "type" : "array",
-                      "items" : {
-                        "type" : "string"
-                      }
                     },
                     "response_description" : {
                       "type" : "object",
@@ -392,15 +363,12 @@
                             "format" : "int32"
                           }
                         },
-                        "format" : {
+                        "data" : {
                           "type" : "string"
                         }
                       }
                     },
                     "route" : {
-                      "type" : "string"
-                    },
-                    "type" : {
                       "type" : "string"
                     }
                   }
