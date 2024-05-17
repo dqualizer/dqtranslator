@@ -49,7 +49,6 @@ class TranslationServiceImpl(
 
 
     override fun translateRqaDefToResilienceTestConfig(rqaDefinition: RuntimeQualityAnalysisDefinition): ResilienceTestConfiguration {
-        // Get domain architecture Mapping from Api by domain_id
         val domainArchitectureMapping = mappingService.getMappingById(rqaDefinition.domainId)
 
         val resilienceTestDefinitions = rqaDefinition.runtimeQualityAnalysis.resilienceTests
@@ -84,8 +83,9 @@ class TranslationServiceImpl(
         if (system?.type?.equals("Process") == true || system?.type?.equals("Class") == true) {
             val enrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, system!!.processId, system!!.processPath, system!!.baseUrl, system!!.packageMember)
             return EnrichedResilienceTestDefinition(
-                    enrichedArtifact,
+                    resilienceTestDefinition.name,
                     resilienceTestDefinition.description,
+                    enrichedArtifact,
                     resilienceTestDefinition.stimulus,
                     resilienceTestDefinition.responseMeasures)
         }
@@ -114,8 +114,9 @@ class TranslationServiceImpl(
         val enrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, null, null, systemMappingWithActivityToTest!!.baseUrl, packageMemberForActivity)
 
         return EnrichedResilienceTestDefinition(
-                enrichedArtifact,
+                resilienceTestDefinition.name,
                 resilienceTestDefinition.description,
+                enrichedArtifact,
                 resilienceTestDefinition.stimulus,
                 resilienceTestDefinition.responseMeasures
         )
