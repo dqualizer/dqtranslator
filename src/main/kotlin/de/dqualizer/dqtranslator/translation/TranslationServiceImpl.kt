@@ -82,7 +82,7 @@ class TranslationServiceImpl(
     fun nodeToEnrichedResilienceTestDefinition(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
         val system = mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId }
         if (system?.type?.equals("Process") == true) {
-            val enrichedArtifact = EnrichedProcessArtifact(resilienceTestDefinition.artifact, system!!.processName, system!!.processPath)
+            val enrichedArtifact = EnrichedProcessArtifact(resilienceTestDefinition.artifact, system.processName, system.processPath)
             return EnrichedResilienceTestDefinition(
                     resilienceTestDefinition.name,
                     resilienceTestDefinition.description,
@@ -91,7 +91,7 @@ class TranslationServiceImpl(
                     resilienceTestDefinition.stimulus,
                     resilienceTestDefinition.responseMeasures)
         } else if (system?.type?.equals("Class") == true){
-            val enrichedArtifact = EnrichedCmsbArtifact(resilienceTestDefinition.artifact, system!!.baseUrl, system!!.packageMember)
+            val enrichedArtifact = EnrichedCmsbArtifact(resilienceTestDefinition.artifact, system.baseUrl, system.packageMember)
             return EnrichedResilienceTestDefinition(
                     resilienceTestDefinition.name,
                     resilienceTestDefinition.description,
@@ -121,7 +121,7 @@ class TranslationServiceImpl(
         val activityMapping = systemMappingWithActivityToTest?.activities?.firstOrNull { it.id == activityIdFromTestDefinition }
         val methodPathForActivity = activityMapping!!.methodPath
 
-        val enrichedArtifact = EnrichedCmsbArtifact(resilienceTestDefinition.artifact, systemMappingWithActivityToTest!!.baseUrl, methodPathForActivity)
+        val enrichedArtifact = EnrichedCmsbArtifact(resilienceTestDefinition.artifact, systemMappingWithActivityToTest.baseUrl, methodPathForActivity)
 
         return EnrichedResilienceTestDefinition(
                 resilienceTestDefinition.name,
