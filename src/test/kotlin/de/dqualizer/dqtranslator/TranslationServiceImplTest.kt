@@ -54,7 +54,7 @@ class TranslationServiceImplTest {
                 { Assertions.assertEquals("1", result.version)},
                 { Assertions.assertEquals("testContext", result.context)},
                 { Assertions.assertEquals("DEV", result.environment)},
-                { Assertions.assertEquals("aTestingProcessName", result.enrichedResilienceTestDefinitions.first().enrichedProcessArtifact.processId)},
+                { Assertions.assertEquals("aTestingProcessName", result.enrichedResilienceTestDefinitions.first().enrichedProcessArtifact.processName)},
                 { Assertions.assertEquals(systemId, result.enrichedResilienceTestDefinitions.first().enrichedProcessArtifact.systemId)},
                 { Assertions.assertEquals(null, result.enrichedResilienceTestDefinitions.first().enrichedProcessArtifact.activityId)},
                 { Assertions.assertEquals("TestDescription", result.enrichedResilienceTestDefinitions.first().description)},
