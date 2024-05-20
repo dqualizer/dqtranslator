@@ -32,12 +32,12 @@ class TranslationServiceImplTest {
         val systemForMapping = System()
         systemForMapping.id = systemId
         systemForMapping.type = "Process"
-        systemForMapping.operationId = "aTestingProcessId"
+        systemForMapping.processName = "aTestingProcessName"
         val systemsSet = mutableSetOf(systemForMapping)
         val domainArchitectureMapping = DomainArchitectureMapping("testId", 1, "testContext", mutableSetOf(), mutableSetOf(), systemsSet)
         val artifact = Artifact(systemId, null)
-        val stimulus = UnavailabilityStimulus(100)
-        val responseMeasures = ResilienceResponseMeasures(Satisfaction.TOLERATED)
+        val stimulus = UnavailabilityStimulus(5,10)
+        val responseMeasures = ResilienceResponseMeasures(Satisfaction.TOLERATED, null, null)
         val resilienceTestDefinition = ResilienceTestDefinition("TestDefinition", artifact, "TestDescription", stimulus, responseMeasures)
         val runtimeQualityAnalysis = RuntimeQualityAnalysis()
         runtimeQualityAnalysis.resilienceTests.add(resilienceTestDefinition)
@@ -50,17 +50,17 @@ class TranslationServiceImplTest {
         val result = translationServiceImplForTest.translateRqaDefToResilienceTestConfig(rqaDefinition)
 
         //assert
-        // TODO assert single inner function calls, when method final
         assertAll(
                 { Assertions.assertEquals("1", result.version)},
                 { Assertions.assertEquals("testContext", result.context)},
                 { Assertions.assertEquals("DEV", result.environment)},
-                { Assertions.assertEquals("aTestingProcessId", result.enrichedResilienceTestDefinitions.first().artifact.processId)},
-                { Assertions.assertEquals(systemId, result.enrichedResilienceTestDefinitions.first().artifact.systemId)},
-                { Assertions.assertEquals(null, result.enrichedResilienceTestDefinitions.first().artifact.activityId)},
+                { Assertions.assertEquals("aTestingProcessName", result.enrichedResilienceTestDefinitions.first().enrichedProcessArtifact.processId)},
+                { Assertions.assertEquals(systemId, result.enrichedResilienceTestDefinitions.first().enrichedProcessArtifact.systemId)},
+                { Assertions.assertEquals(null, result.enrichedResilienceTestDefinitions.first().enrichedProcessArtifact.activityId)},
                 { Assertions.assertEquals("TestDescription", result.enrichedResilienceTestDefinitions.first().description)},
-                //{ Assertions.assertEquals("Unavailability", result.enrichedResilienceTestDefinitions.first().stimulus.type)},
-                { Assertions.assertEquals(100, result.enrichedResilienceTestDefinitions.first().stimulus.accuracy)},
+                { Assertions.assertTrue(result.enrichedResilienceTestDefinitions.first().stimulus is UnavailabilityStimulus)},
+                { Assertions.assertEquals(5, result.enrichedResilienceTestDefinitions.first().stimulus.pauseBeforeTriggeringSeconds)},
+                { Assertions.assertEquals(10, result.enrichedResilienceTestDefinitions.first().stimulus.experimentDurationSeconds)},
                 { Assertions.assertEquals(Satisfaction.TOLERATED, result.enrichedResilienceTestDefinitions.first().responseMeasure.recoveryTime)},
         )
     }
