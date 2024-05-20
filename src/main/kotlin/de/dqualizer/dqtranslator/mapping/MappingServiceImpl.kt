@@ -61,32 +61,4 @@ class MappingServiceImpl(
         // Return the result or throw an error if it's null
         return result ?: throw IllegalStateException("Failed to fetch DomainArchitectureMapping for ID: $id")
     }
-
-    override fun getMappingByIdHardcoded(id: String): DomainArchitectureMapping {
-
-        val serverInfo = ServerInfo()
-        serverInfo.id = "testServerId"
-        serverInfo.environment = "DEV"
-        serverInfo.host = "http://localhost:3000/"
-
-        val systemForMapping = System()
-        systemForMapping.id = "MyComputer"
-        systemForMapping.type = "Process"
-        systemForMapping.processName = "KeePassXC.exe"
-        systemForMapping.processPath = """C:\Program Files\KeePassXC.exe"""
-        val activity = Activity()
-        val endpoint = Endpoint()
-        endpoint.field = "/"
-        endpoint.operation = "GET"
-        endpoint.path_variables = listOf()
-        endpoint.url_parameter = listOf()
-        endpoint.request_parameter = listOf()
-        endpoint.payloads = listOf()
-        endpoint.responses = listOf()
-        activity.endpoint = endpoint
-        systemForMapping.activities = listOf(activity)
-
-        return DomainArchitectureMapping("testId", 1, "testContext", mutableSetOf(serverInfo), mutableSetOf(), setOf(systemForMapping))
-    }
-
 }
