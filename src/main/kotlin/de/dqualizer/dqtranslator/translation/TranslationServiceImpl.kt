@@ -6,7 +6,8 @@ import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
 import io.github.dqualizer.dqlang.types.dam.Endpoint
 import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestArtifact
 import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
-import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.EnrichedArtifact
+import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.EnrichedCmsbArtifact
+import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.EnrichedProcessArtifact
 import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.EnrichedResilienceTestDefinition
 import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.ResilienceTestConfiguration
 import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
@@ -80,11 +81,21 @@ class TranslationServiceImpl(
 
     fun nodeToEnrichedResilienceTestDefinition(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
         val system = mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId }
-        if (system?.type?.equals("Process") == true || system?.type?.equals("Class") == true) {
-            val enrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, system!!.processId, system!!.processPath, system!!.baseUrl, system!!.packageMember)
+        if (system?.type?.equals("Process") == true) {
+            val enrichedArtifact = EnrichedProcessArtifact(resilienceTestDefinition.artifact, system!!.processName, system!!.processPath)
             return EnrichedResilienceTestDefinition(
                     resilienceTestDefinition.name,
                     resilienceTestDefinition.description,
+                    enrichedArtifact,
+                    null,
+                    resilienceTestDefinition.stimulus,
+                    resilienceTestDefinition.responseMeasures)
+        } else if (system?.type?.equals("Class") == true){
+            val enrichedArtifact = EnrichedCmsbArtifact(resilienceTestDefinition.artifact, system!!.baseUrl, system!!.packageMember)
+            return EnrichedResilienceTestDefinition(
+                    resilienceTestDefinition.name,
+                    resilienceTestDefinition.description,
+                    null,
                     enrichedArtifact,
                     resilienceTestDefinition.stimulus,
                     resilienceTestDefinition.responseMeasures)
@@ -108,14 +119,14 @@ class TranslationServiceImpl(
         val activityIdFromTestDefinition = resilienceTestDefinition.artifact.activityId
         val systemMappingWithActivityToTest = mapping.systems.first { system -> system.id == systemIdFromTestDefinition && system.activities.any { it.id == activityIdFromTestDefinition } }
         val activityMapping = systemMappingWithActivityToTest?.activities?.firstOrNull { it.id == activityIdFromTestDefinition }
-        val packageMemberForActivity = activityMapping!!.operationId
+        val methodPathForActivity = activityMapping!!.methodPath
 
-
-        val enrichedArtifact = EnrichedArtifact(resilienceTestDefinition.artifact, null, null, systemMappingWithActivityToTest!!.baseUrl, packageMemberForActivity)
+        val enrichedArtifact = EnrichedCmsbArtifact(resilienceTestDefinition.artifact, systemMappingWithActivityToTest!!.baseUrl, methodPathForActivity)
 
         return EnrichedResilienceTestDefinition(
                 resilienceTestDefinition.name,
                 resilienceTestDefinition.description,
+                null,
                 enrichedArtifact,
                 resilienceTestDefinition.stimulus,
                 resilienceTestDefinition.responseMeasures

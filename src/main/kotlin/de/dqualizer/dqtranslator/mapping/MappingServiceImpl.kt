@@ -72,7 +72,7 @@ class MappingServiceImpl(
         val systemForMapping = System()
         systemForMapping.id = "MyComputer"
         systemForMapping.type = "Process"
-        systemForMapping.processId = "KeePassXC.exe"
+        systemForMapping.processName = "KeePassXC.exe"
         systemForMapping.processPath = """C:\Program Files\KeePassXC.exe"""
         val activity = Activity()
         val endpoint = Endpoint()
