@@ -14,6 +14,7 @@ import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.LoadTestDefinition
 import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.ResilienceTestDefinition
+import io.github.dqualizer.dqlang.types.rqa.definition.resiliencetest.stimulus.UnavailabilityStimulus
 
 
 import org.slf4j.LoggerFactory
@@ -81,7 +82,7 @@ class TranslationServiceImpl(
 
     fun nodeToEnrichedResilienceTestDefinition(resilienceTestDefinition: ResilienceTestDefinition, mapping: DomainArchitectureMapping): EnrichedResilienceTestDefinition {
         val system = mapping.systems.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId }
-        if (system?.type?.equals("Process") == true) {
+        if (system != null && resilienceTestDefinition.stimulus is UnavailabilityStimulus) {
             val enrichedArtifact = EnrichedProcessArtifact(resilienceTestDefinition.artifact, system.processName, system.processPath)
             return EnrichedResilienceTestDefinition(
                     resilienceTestDefinition.name,
@@ -90,7 +91,7 @@ class TranslationServiceImpl(
                     null,
                     resilienceTestDefinition.stimulus,
                     resilienceTestDefinition.responseMeasures)
-        } else if (system?.type?.equals("Class") == true){
+        } else if (system != null){
             val enrichedArtifact = EnrichedCmsbArtifact(resilienceTestDefinition.artifact, system.baseUrl, system.packageMember)
             return EnrichedResilienceTestDefinition(
                     resilienceTestDefinition.name,
