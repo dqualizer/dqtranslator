@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val dqlangVersion = "3.1.7-SNAPSHOT"
+
 plugins {
     kotlin("jvm") version "1.9.10"
     kotlin("plugin.spring") version "1.9.10"
@@ -71,7 +73,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
-    implementation("io.github.dqualizer:dqlang:3.1.5-SNAPSHOT")
+    implementation("io.github.dqualizer:dqlang:${dqlangVersion}")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
