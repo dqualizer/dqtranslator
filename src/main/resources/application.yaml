@@ -1,15 +1,18 @@
 dqualizer:
-
   messaging:
     queues: # Queues to connect to
       rqaDefinitionReceiverQueue:
-        name: 'rqaDefinitionReceiver'
+        name: "rqaDefinitionReceiver"
       rqaConfigurationProducerQueue:
-        name: 'rqaConfiguration'
+        name: "rqaConfiguration"
 
   dqapi:
-    host: 'localhost'
-    port: '8099'
+    host: "localhost"
+    port: "8099"
 
-  mappingDirectory: 'mappings'
+  mappingDirectory: "mappings"
 
+spring:
+  data:
+    mongodb:
+      uri: mongodb://dqualizer:testdqualizer@dqDatabase:27017/dqualizer?authSource=admin

@@ -3,12 +3,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val dqlangVersion = "3.1.7-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "1.9.10"
-    kotlin("plugin.spring") version "1.9.10"
-	kotlin("plugin.serialization") version "1.9.0"
+    kotlin("jvm") version "1.9.23"
+    kotlin("plugin.spring") version "1.9.23"
+	kotlin("plugin.serialization") version "1.9.23"
 
-    id("org.springframework.boot") version "3.2.3"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot") version "3.2.5"
+    id("io.spring.dependency-management") version "1.1.5"
 
     id("net.researchgate.release") version "3.0.2"
     id("maven-publish")
@@ -17,7 +17,8 @@ plugins {
 }
 
 group = "io.github.dqualizer"
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
+java.targetCompatibility = JavaVersion.VERSION_21
 
 release {
     //no config needed, see https://github.com/researchgate/gradle-release for options
@@ -51,36 +52,36 @@ configurations {
 
 repositories {
 	mavenCentral()
-	 maven {
-		 name="gpr"
+    maven {
+        name="gpr"
 		url = uri("https://maven.pkg.github.com/dqualizer/dqlang")
 		credentials(PasswordCredentials::class)
-	 }
+ }
 }
 
 dependencies {
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.2.3"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.2.5"))
 
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-    implementation("io.ktor:ktor-client-core:2.3.3")
-    implementation("io.ktor:ktor-client-cio:2.3.3")
-    implementation("io.ktor:ktor-client-logging:2.3.3")
+    implementation("io.ktor:ktor-client-core:2.3.10")
+    implementation("io.ktor:ktor-client-cio:2.3.10")
+    implementation("io.ktor:ktor-client-logging:2.3.10")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.0")
 
-    implementation("io.github.dqualizer:dqlang:${dqlangVersion}")
+    implementation("io.github.dqualizer:dqlang:$dqlangVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
     testImplementation("org.jeasy:easy-random-core:5.0.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
     //assertJ
-    testImplementation("org.assertj:assertj-core:3.25.2")
+    testImplementation("org.assertj:assertj-core:3.25.3")
     testImplementation("com.github.fridujo:rabbitmq-mock:1.2.0")
 
     //testcontainers
@@ -93,7 +94,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
 }
 
