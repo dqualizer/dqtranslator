@@ -56,9 +56,9 @@ class MonitoringTranslatorsTest {
       System("company Service"),
       System("Assignment Service"),
       System("Master Data Service"),
-      WorkObject("Master Data"),
-      WorkObject("Assignment Data"),
-      WorkObject("Company Created Event")
+      WorkObject("Master Data", WorkObjectType.DATA),
+      WorkObject("Assignment Data", WorkObjectType.DATA),
+      WorkObject("Company Created Event", WorkObjectType.MESSAGE)
     ).map { it.apply { id = it.name } }
 
     val activities = listOf(
