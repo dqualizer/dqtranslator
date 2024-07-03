@@ -11,3 +11,8 @@ dqualizer:
     port: "8099"
 
   mappingDirectory: "mappings"
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/dqualizer
