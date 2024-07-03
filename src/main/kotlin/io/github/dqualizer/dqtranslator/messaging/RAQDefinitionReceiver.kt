@@ -13,26 +13,26 @@ import org.springframework.stereotype.Component
 
 @Component
 class RAQDefinitionReceiver(
-    private val rqaTranslators: List<RQATranslator>,
-    private val rqaConfigurationProducer: RQAConfigurationProducer,
+  private val rqaTranslators: List<RQATranslator>,
+  private val rqaConfigurationProducer: RQAConfigurationProducer,
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
+  private val log = LoggerFactory.getLogger(javaClass)
 
-    @RabbitListener(queues = ["\${dqualizer.messaging.queues.rqaDefinitionReceiverQueue.name}"])
-    fun receive(@Payload rqaDefinition: RuntimeQualityAnalysisDefinition, @Headers headers: MessageHeaders) {
-        log.debug("Received an RQA Definition: {}", rqaDefinition)
+  @RabbitListener(queues = ["\${dqualizer.messaging.queues.rqaDefinitionReceiverQueue.name}"])
+  fun receive(@Payload rqaDefinition: RuntimeQualityAnalysisDefinition, @Headers headers: MessageHeaders) {
+    log.debug("Received an RQA Definition: {}", rqaDefinition)
 
-        try {
-            //translate rqa definition to rqa configuration
-            val rqaConfiguration = RQATranslationChain()
-                .chain(rqaTranslators)
-                .translate(rqaDefinition)
+    try {
+      //translate rqa definition to rqa configuration
+      val rqaConfiguration = RQATranslationChain()
+        .chain(rqaTranslators)
+        .translate(rqaDefinition)
 
-            //publish result
-            rqaConfigurationProducer.produce(rqaConfiguration, headers)
-        } catch (e: Exception) {
-            log.error("Failed to translate RQA Definition: {}", rqaDefinition, e)
-            throw AmqpRejectAndDontRequeueException(e)
-        }
+      //publish result
+      rqaConfigurationProducer.produce(rqaConfiguration, headers)
+    } catch (e: Exception) {
+      log.error("Failed to translate RQA Definition: {}", rqaDefinition, e)
+      throw AmqpRejectAndDontRequeueException(e)
     }
+  }
 }

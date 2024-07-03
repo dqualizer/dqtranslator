@@ -4,5 +4,5 @@ import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 
 fun interface RQATranslator {
-    fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition, target: RQAConfiguration): RQAConfiguration
+  fun translate(rqaDefinition: RuntimeQualityAnalysisDefinition, target: RQAConfiguration): RQAConfiguration
 }

@@ -30,16 +30,20 @@
             "name": "endpoint-name",
             "code_component": "71b7f3f7-bc5f-427e-803b-7dd4f389c7bb",
             "route": "/example",
-            "methods": ["GET"],
+            "methods": [
+              "GET"
+            ],
             "parameter": [
-                {
-                  "type": "Header",
-                  "data": "resources/header.json"
-                }
-              ],
+              {
+                "type": "Header",
+                "data": "resources/header.json"
+              }
+            ],
             "response_description": {
               "format": "string",
-              "expected_status_codes": [200]
+              "expected_status_codes": [
+                200
+              ]
             }
           }
         ],

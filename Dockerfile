@@ -1,4 +1,4 @@
-FROM gradle:8 as builder
+FROM gradle:8 AS builder
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
 
@@ -7,7 +7,7 @@ COPY . .
 
 RUN gradle -PgprPassword=$GITHUB_TOKEN -PgprUsername=$GITHUB_USER assemble --no-daemon
 
-FROM eclipse-temurin:21-jre-alpine as rt
+FROM eclipse-temurin:21-jre-alpine AS rt
 
 WORKDIR /app
 

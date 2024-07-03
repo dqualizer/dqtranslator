@@ -1,133 +1,138 @@
 {
-  "$schema" : "https://json-schema.org/draft/2020-12/schema",
-  "$defs" : {
-    "Scenario" : {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string"
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "Scenario": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
         },
-        "path" : {
-          "type" : "string"
+        "path": {
+          "type": "string"
         }
       }
     }
   },
-  "type" : "object",
-  "properties" : {
-    "_class" : {
-      "type" : "string"
+  "type": "object",
+  "properties": {
+    "_class": {
+      "type": "string"
     },
-    "context" : {
-      "type" : "string"
+    "context": {
+      "type": "string"
     },
-    "domain_id" : {
-      "type" : "string"
+    "domain_id": {
+      "type": "string"
     },
-    "environment" : {
-      "type" : "string",
-      "enum" : [ "PROD", "TEST", "DEV", "INT" ]
+    "environment": {
+      "type": "string",
+      "enum": [
+        "PROD",
+        "TEST",
+        "DEV",
+        "INT"
+      ]
     },
-    "id" : {
-      "type" : "string"
+    "id": {
+      "type": "string"
     },
-    "name" : {
-      "type" : "string"
+    "name": {
+      "type": "string"
     },
-    "runtime_quality_analysis" : {
-      "type" : "object",
-      "properties" : {
-        "loadtests" : {
-          "type" : "array",
-          "items" : {
-            "type" : "object",
-            "properties" : {
-              "_class" : {
-                "type" : "string"
+    "runtime_quality_analysis": {
+      "type": "object",
+      "properties": {
+        "loadtests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_class": {
+                "type": "string"
               },
-              "artifact" : {
-                "type" : "object",
-                "properties" : {
-                  "activity_id" : {
-                    "type" : "string"
+              "artifact": {
+                "type": "object",
+                "properties": {
+                  "activity_id": {
+                    "type": "string"
                   },
-                  "system_id" : {
-                    "type" : "string"
+                  "system_id": {
+                    "type": "string"
                   }
                 }
               },
-              "description" : {
-                "type" : "string"
+              "description": {
+                "type": "string"
               },
-              "id" : {
-                "type" : "string"
+              "id": {
+                "type": "string"
               },
-              "name" : {
-                "type" : "string"
+              "name": {
+                "type": "string"
               },
-              "parametrization" : {
-                "type" : "object",
-                "properties" : {
-                  "path_variables" : {
-                    "type" : "array",
-                    "items" : {
-                      "type" : "object",
-                      "properties" : {
-                        "name" : {
-                          "type" : "string"
+              "parametrization": {
+                "type": "object",
+                "properties": {
+                  "path_variables": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
                         },
-                        "scenarios" : {
-                          "type" : "array",
-                          "items" : {
-                            "$ref" : "#/$defs/Scenario"
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/$defs/Scenario"
                           }
                         }
                       }
                     }
                   },
-                  "payload" : {
-                    "type" : "object",
-                    "properties" : {
-                      "name" : {
-                        "type" : "string"
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
                       },
-                      "scenarios" : {
-                        "type" : "array",
-                        "items" : {
-                          "$ref" : "#/$defs/Scenario"
+                      "scenarios": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Scenario"
                         }
                       }
                     }
                   },
-                  "request_parameter" : {
-                    "type" : "array",
-                    "items" : {
-                      "type" : "object",
-                      "properties" : {
-                        "name" : {
-                          "type" : "string"
+                  "request_parameter": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
                         },
-                        "scenarios" : {
-                          "type" : "array",
-                          "items" : {
-                            "$ref" : "#/$defs/Scenario"
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/$defs/Scenario"
                           }
                         }
                       }
                     }
                   },
-                  "url_parameters" : {
-                    "type" : "array",
-                    "items" : {
-                      "type" : "object",
-                      "properties" : {
-                        "name" : {
-                          "type" : "string"
+                  "url_parameters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
                         },
-                        "scenarios" : {
-                          "type" : "array",
-                          "items" : {
-                            "$ref" : "#/$defs/Scenario"
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/$defs/Scenario"
                           }
                         }
                       }
@@ -135,75 +140,91 @@
                   }
                 }
               },
-              "response_measures" : {
-                "type" : "object",
-                "properties" : {
-                  "response_time" : {
-                    "type" : "string",
-                    "enum" : [ "SATISFIED", "TOLERATED", "FRUSTRATED" ]
+              "response_measures": {
+                "type": "object",
+                "properties": {
+                  "response_time": {
+                    "type": "string",
+                    "enum": [
+                      "SATISFIED",
+                      "TOLERATED",
+                      "FRUSTRATED"
+                    ]
                   }
                 }
               },
-              "result_metrics" : {
-                "type" : "array",
-                "items" : {
-                  "type" : "string",
-                  "enum" : [ "RESPONSE_TIME", "NINETY_PERCENTILE", "NINETY_FIVE_PERCENTILE" ]
+              "result_metrics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "RESPONSE_TIME",
+                    "NINETY_PERCENTILE",
+                    "NINETY_FIVE_PERCENTILE"
+                  ]
                 }
               },
-              "stimulus" : {
-                "type" : "object",
-                "properties" : {
-                  "accuracy" : {
-                    "type" : "integer",
-                    "format" : "int32"
+              "stimulus": {
+                "type": "object",
+                "properties": {
+                  "accuracy": {
+                    "type": "integer",
+                    "format": "int32"
                   },
-                  "load_profile" : {
-                    "type" : "string",
-                    "enum" : [ "LOAD_PEAK", "LOAD_INCREASE", "CONSTANT_LOAD" ]
+                  "load_profile": {
+                    "type": "string",
+                    "enum": [
+                      "LOAD_PEAK",
+                      "LOAD_INCREASE",
+                      "CONSTANT_LOAD"
+                    ]
                   },
-                  "type" : {
-                    "type" : "string"
+                  "type": {
+                    "type": "string"
                   }
                 }
               }
             }
           }
         },
-        "monitoring_definition" : {
-          "type" : "array",
-          "items" : {
-            "type" : "object",
-            "properties" : {
-              "id" : {
-                "type" : "string"
+        "monitoring_definition": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
               },
-              "measurement_name" : {
-                "type" : "string"
+              "measurement_name": {
+                "type": "string"
               },
-              "measurement_type" : {
-                "type" : "string",
-                "enum" : [ "EXECUTION_TIME", "EXECUTION_COUNT", "VALUE_INSPECTION" ]
+              "measurement_type": {
+                "type": "string",
+                "enum": [
+                  "EXECUTION_TIME",
+                  "EXECUTION_COUNT",
+                  "VALUE_INSPECTION"
+                ]
               },
-              "measurement_unit" : {
-                "type" : "string"
+              "measurement_unit": {
+                "type": "string"
               },
-              "target" : {
-                "type" : "string"
+              "target": {
+                "type": "string"
               }
             }
           }
         },
-        "resilience_definition" : {
-          "type" : "array",
-          "items" : {
-            "type" : "object"
+        "resilience_definition": {
+          "type": "array",
+          "items": {
+            "type": "object"
           }
         }
       }
     },
-    "version" : {
-      "type" : "string"
+    "version": {
+      "type": "string"
     }
   }
 }

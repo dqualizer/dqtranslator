@@ -1,81 +1,81 @@
 {
-    "version": 1.0,
-    "context": "kinokasse",
-    "server_info": [
-        {   
-            "host": "localhost:8080",
-            "environment": "TEST"
-        }
-    ],
-    "objects": [
+  "version": 1.0,
+  "context": "kinokasse",
+  "server_info": [
+    {
+      "host": "localhost:8080",
+      "environment": "TEST"
+    }
+  ],
+  "objects": [
+    {
+      "dq_id": "id1",
+      "name": "Kino App",
+      "operation_id": "wps.arthousecinema.app.KinoApp",
+      "type": "class",
+      "implements": [
+        "id4"
+      ],
+      "objects": [
+        "id2",
+        "id3"
+      ],
+      "activities": [
         {
-            "dq_id": "id1",
-            "name": "Kino App",
-            "operation_id": "wps.arthousecinema.app.KinoApp",
-            "type": "class",
-            "implements": [
-                "id4"
-            ],
-            "objects": [
-                "id2",
-                "id3"
-            ],
-            "activities": [
-                {
-                    "dq_id": "id10",
-                    "name": "öffnen",
-                    "operation_id": "openApp",
-                    "type": "method",
-                    "parameter": [
-                        "id3",
-                        "id1"
-                    ],
-                    "endpoint": {
-                        "field": "/kinoapp/{version}/open",
-                        "operation": "GET",
-                        "path_variables": {
-                            "version": "dq/kinoapp/versions.csv"
-                        },
-                        "url_parameter": {},
-                        "request_parameter": {},
-                        "payload": {
-                            "valid_nutzer": "dq/kinoapp/open/valid_nutzer.json",
-                            "invalid_nutzer": "dq/kinoapp/open/invalid_nutzer.json"
-                        },
-                        "responses": [
-                            {
-                                "expected_code": 200,
-                                "type": "id15"
-                            },
-                            {
-                                "expected_code": 404,
-                                "type": "null"
-                            }
-                        ]
-                    }
-                }
+          "dq_id": "id10",
+          "name": "öffnen",
+          "operation_id": "openApp",
+          "type": "method",
+          "parameter": [
+            "id3",
+            "id1"
+          ],
+          "endpoint": {
+            "field": "/kinoapp/{version}/open",
+            "operation": "GET",
+            "path_variables": {
+              "version": "dq/kinoapp/versions.csv"
+            },
+            "url_parameter": {},
+            "request_parameter": {},
+            "payload": {
+              "valid_nutzer": "dq/kinoapp/open/valid_nutzer.json",
+              "invalid_nutzer": "dq/kinoapp/open/invalid_nutzer.json"
+            },
+            "responses": [
+              {
+                "expected_code": 200,
+                "type": "id15"
+              },
+              {
+                "expected_code": 404,
+                "type": "null"
+              }
             ]
-        },
-        {
-            "dq_id": "id2",
-            "name": "Nutzer",
-            "operation_id": "app.Nutzer",
-            "type": "class",
-            "implements": [],
-            "objects": [],
-            "activities": []
-        },
-        {
-            "dq_id": "id3",
-            "name": "version",
-            "operation_id": "version",
-            "type": "variable"
-        },
-        {
-            "dq_id": "id4",
-            "name": "Mobile App",
-            "operation_id": "app.MobileApp",
-            "type": "interface"
+          }
         }
-    ]
+      ]
+    },
+    {
+      "dq_id": "id2",
+      "name": "Nutzer",
+      "operation_id": "app.Nutzer",
+      "type": "class",
+      "implements": [],
+      "objects": [],
+      "activities": []
+    },
+    {
+      "dq_id": "id3",
+      "name": "version",
+      "operation_id": "version",
+      "type": "variable"
+    },
+    {
+      "dq_id": "id4",
+      "name": "Mobile App",
+      "operation_id": "app.MobileApp",
+      "type": "interface"
+    }
+  ]
 }

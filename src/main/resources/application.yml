@@ -11,8 +11,3 @@ dqualizer:
     port: "8099"
 
   mappingDirectory: "mappings"
-
-spring:
-  data:
-    mongodb:
-      uri: mongodb://dqualizer:testdqualizer@dqDatabase:27017/dqualizer?authSource=admin

@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class DqtranslatorApplication
 
 fun main(args: Array<String>) {
-    runApplication<DqtranslatorApplication>(*args)
+  runApplication<DqtranslatorApplication>(*args)
 }

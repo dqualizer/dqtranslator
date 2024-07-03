@@ -33,140 +33,140 @@ import java.lang.module.ModuleDescriptor.Version
 import java.util.*
 
 class VersionRandomizer : AbstractRandomizer<Version>() {
-    override fun getRandomValue(): Version {
-        return Version.parse("${random.nextInt(10)}.${random.nextInt(10)}.${random.nextInt(10)}")
-    }
+  override fun getRandomValue(): Version {
+    return Version.parse("${random.nextInt(10)}.${random.nextInt(10)}.${random.nextInt(10)}")
+  }
 }
 
 
 @SpringBootTest
 class IntegrationTest {
 
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun setUp() {
+  companion object {
+    @JvmStatic
+    @BeforeAll
+    fun setUp() {
 
-            val rabbit = RabbitMQContainer("rabbitmq:management-alpine")
-            rabbit.portBindings = listOf("5672:5672", "15672:15672")
-            rabbit.start()
+      val rabbit = RabbitMQContainer("rabbitmq:management-alpine")
+      rabbit.portBindings = listOf("5672:5672", "15672:15672")
+      rabbit.start()
 
-            val mongoDBContainer = MongoDBContainer("mongo:7")
-            mongoDBContainer.portBindings = listOf("27017:27017")
-            mongoDBContainer.start()
-        }
+      val mongoDBContainer = MongoDBContainer("mongo:7")
+      mongoDBContainer.portBindings = listOf("27017:27017")
+      mongoDBContainer.start()
     }
+  }
 
-    @Autowired
-    lateinit var translators: List<RQATranslator>
+  @Autowired
+  lateinit var translators: List<RQATranslator>
 
-    @Autowired
-    lateinit var rqaConfigurationProducer: RQAConfigurationProducer
+  @Autowired
+  lateinit var rqaConfigurationProducer: RQAConfigurationProducer
 
-    @Autowired
-    lateinit var damStore: DAMRepository
+  @Autowired
+  lateinit var damStore: DAMRepository
 
-    var generator = EasyRandom(
-        EasyRandomParameters().randomize(LoadProfile::class.java) {
-            return@randomize EasyRandom().nextObject(
-                listOf(
-                    LoadPeak::class.java,
-                    LoadIncrease::class.java,
-                    ConstantLoad::class.java
-                ).random()
-            )
-        }.randomize(Actor::class.java) {
-            return@randomize EasyRandom().nextObject(
-                listOf(
-                    Person::class.java,
-                    Group::class.java,
-                    System::class.java
-                ).random()
-            )
-        }.randomize(HttpMethod::class.java) {
-            return@randomize HttpMethod.values().random()
-        }.randomize({
-            it.name == "number"
-        }, {
-            return@randomize Random().nextInt(100)
-        }).randomize(Version::class.java, VersionRandomizer())
+  var generator = EasyRandom(
+    EasyRandomParameters().randomize(LoadProfile::class.java) {
+      return@randomize EasyRandom().nextObject(
+        listOf(
+          LoadPeak::class.java,
+          LoadIncrease::class.java,
+          ConstantLoad::class.java
+        ).random()
+      )
+    }.randomize(Actor::class.java) {
+      return@randomize EasyRandom().nextObject(
+        listOf(
+          Person::class.java,
+          Group::class.java,
+          System::class.java
+        ).random()
+      )
+    }.randomize(HttpMethod::class.java) {
+      return@randomize HttpMethod.values().random()
+    }.randomize({
+      it.name == "number"
+    }, {
+      return@randomize Random().nextInt(100)
+    }).randomize(Version::class.java, VersionRandomizer())
+  )
+
+
+  @BeforeEach
+  fun beforeEach() {
+    damStore.clear()
+  }
+
+
+  data class TestData(val rqaD: RuntimeQualityAnalysisDefinition, val dam: DomainArchitectureMapping)
+
+  private fun loadTestData(): TestData {
+    val objectMapper = AMQPAutoConfiguration().objectMapper()
+    val rqa: RuntimeQualityAnalysisDefinition = objectMapper.readValue(
+      File("src/test/resources/mock/RQA.json"),
+      RuntimeQualityAnalysisDefinition::class.java
+    )
+    val dam: DomainArchitectureMapping = objectMapper.readValue(
+      File("src/test/resources/mock/MockMapping.json"),
+      DomainArchitectureMapping::class.java
+    )
+
+    assertThat(rqa).isNotNull
+    assertThat(dam).isNotNull
+
+    return TestData(rqa, dam)
+  }
+
+
+  @Test
+  fun canLoadTestData() {
+    val data = loadTestData()
+    assertThat(data).isNotNull
+  }
+
+  @Test
+  fun canTranslateTestData() {
+    val data = loadTestData()
+
+    damStore.storeDAM(data.dam)
+
+    val rqaWithCorrectContext = RuntimeQualityAnalysisDefinition(
+      data.rqaD.name,
+      data.rqaD.version,
+      data.rqaD.domainId,
+      data.rqaD.context,
+      data.rqaD.environment,
+      data.rqaD.runtimeQualityAnalysis
     )
 
 
-    @BeforeEach
-    fun beforeEach() {
-        damStore.clear()
+    val rqaConfiguration = RQATranslationChain()
+      .chain(translators)
+      .translate(rqaWithCorrectContext)
+
+    assertThat(rqaConfiguration).isNotNull
+  }
+
+
+  @Test
+  fun canSendTranslationToQueue() {
+    val data = loadTestData()
+    damStore.storeDAM(data.dam)
+
+
+    val rqaConfiguration = RQATranslationChain()
+      .chain(translators)
+      .translate(data.rqaD)
+
+    rqaConfiguration.loadConfiguration = generator.nextObject(LoadTestConfiguration::class.java)
+    rqaConfiguration.context = data.dam.id!!
+
+    for (i in 0..<1) {
+      rqaConfigurationProducer.produce(rqaConfiguration, MessageHeaders(mapOf()))
     }
 
-
-    data class TestData(val rqaD: RuntimeQualityAnalysisDefinition, val dam: DomainArchitectureMapping)
-
-    private fun loadTestData(): TestData {
-        val objectMapper = AMQPAutoConfiguration().objectMapper()
-        val rqa: RuntimeQualityAnalysisDefinition = objectMapper.readValue(
-            File("src/test/resources/mock/RQA.json"),
-            RuntimeQualityAnalysisDefinition::class.java
-        )
-        val dam: DomainArchitectureMapping = objectMapper.readValue(
-            File("src/test/resources/mock/MockMapping.json"),
-            DomainArchitectureMapping::class.java
-        )
-
-        assertThat(rqa).isNotNull
-        assertThat(dam).isNotNull
-
-        return TestData(rqa, dam)
-    }
-
-
-    @Test
-    fun canLoadTestData() {
-        val data = loadTestData()
-        assertThat(data).isNotNull
-    }
-
-    @Test
-    fun canTranslateTestData() {
-        val data = loadTestData()
-
-        damStore.storeDAM(data.dam)
-
-        val rqaWithCorrectContext = RuntimeQualityAnalysisDefinition(
-            data.rqaD.name,
-            data.rqaD.version,
-            data.rqaD.domainId,
-            data.rqaD.context,
-            data.rqaD.environment,
-            data.rqaD.runtimeQualityAnalysis
-        )
-
-
-        val rqaConfiguration = RQATranslationChain()
-            .chain(translators)
-            .translate(rqaWithCorrectContext)
-
-        assertThat(rqaConfiguration).isNotNull
-    }
-
-
-    @Test
-    fun canSendTranslationToQueue() {
-        val data = loadTestData()
-        damStore.storeDAM(data.dam)
-
-
-        val rqaConfiguration = RQATranslationChain()
-            .chain(translators)
-            .translate(data.rqaD)
-
-        rqaConfiguration.loadConfiguration = generator.nextObject(LoadTestConfiguration::class.java)
-        rqaConfiguration.context = data.dam.id!!
-
-        for (i in 0..<1) {
-            rqaConfigurationProducer.produce(rqaConfiguration, MessageHeaders(mapOf()))
-        }
-
-        assertThat(rqaConfiguration).isNotNull
-    }
+    assertThat(rqaConfiguration).isNotNull
+  }
 }
 

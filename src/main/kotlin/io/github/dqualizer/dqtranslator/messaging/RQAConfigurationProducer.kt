@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component
 
 @Component
 class RQAConfigurationProducer(
-    val template: RabbitTemplate,
-    val messageConverter: MessageConverter
+  val template: RabbitTemplate,
+  val messageConverter: MessageConverter
 ) {
 
-    @Value("\${dqualizer.messaging.queues.rqaConfigurationProducerQueue.name}")
-    private lateinit var producerQueueRoutingKey: String
+  @Value("\${dqualizer.messaging.queues.rqaConfigurationProducerQueue.name}")
+  private lateinit var producerQueueRoutingKey: String
 
-    fun produce(rqaConfiguration: RQAConfiguration, headers: MessageHeaders) {
-        val message = messageConverter.toMessage(rqaConfiguration, MessageProperties().apply { setHeaders(headers) })
-        template.convertAndSend(producerQueueRoutingKey, message)
-    }
+  fun produce(rqaConfiguration: RQAConfiguration, headers: MessageHeaders) {
+    val message = messageConverter.toMessage(rqaConfiguration, MessageProperties().apply { setHeaders(headers) })
+    template.convertAndSend(producerQueueRoutingKey, message)
+  }
 }
