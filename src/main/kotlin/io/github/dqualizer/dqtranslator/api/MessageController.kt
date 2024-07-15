@@ -46,6 +46,7 @@ class MessageController(
 
     runBlocking {
       rqaResponse = client.get("http://${dqApiHost}:${dqApiPort}/api/v2/rqa/$rqaId")
+      log.info("RQA response: $rqaResponse")
       val rqaDefinition = objectMapper.readValue(rqaResponse.bodyAsText(), RuntimeQualityAnalysisDefinition::class.java)
 
       val rqaConfiguration = RQATranslationChain()

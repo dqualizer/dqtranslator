@@ -1,4 +1,4 @@
-val dqlangVersion = "3.1.14-SNAPSHOT"
+val dqlangVersion = "3.1.15-SNAPSHOT"
 val ktorVersion = "2.3.12"
 
 plugins {
