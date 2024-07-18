@@ -1,0 +1,203 @@
+{
+  "software_system": {
+    "name": "Instrumentation Mock",
+    "environment": "DEV",
+    "services": [
+      {
+        "name": "Assignement Service",
+        "deployment_name": "assignment-service",
+        "uri": "http://assignment-service:8080",
+        "programming_framework": {
+          "type": "Spring",
+          "version": "2.7.10"
+        },
+        "programming_language": "Java",
+        "instrumentation_framework": {
+          "name": "InspectIT Ocelot",
+          "existing": false,
+          "has_metrics": false,
+          "has_traces": false,
+          "has_logging": false,
+          "options": {
+            "INSPECTIT_EXPORTERS_METRICS_OTLP_ENABLED": "true",
+            "INSPECTIT_EXPORTERS_METRICS_OTLP_ENDPOINT": "http://otel-collector:4317",
+            "INSPECTIT_EXPORTERS_METRICS_OTLP_PROTOCOL": "grpc",
+            "INSPECTIT_EXPORTERS_TRACING_OTLP_ENABLED": "true",
+            "INSPECTIT_EXPORTERS_TRACING_OTLP_ENDPOINT": "http://otel-collector:4317",
+            "INSPECTIT_EXPORTERS_TRACING_OTLP_PROTOCOL": "grpc",
+            "INSPECTIT_EXPORTERS_TRACING_LOGGING_ENABLED": "true",
+            "INSPECTIT_SERVICE_NAME": "assignment-service"
+          }
+        },
+        "runtime_platform_id": "dockerHost1",
+        "endpoints": [],
+        "api_schema": null,
+        "code_components": [
+          {
+            "name": "Master Data Requester",
+            "identifier": "dqualizer.fibumock.stammdaten.stammdaten.acds.kafka.MasterDataRequestProducer#requestMasterData",
+            "file": "MasterDataRequestProducer.java",
+            "type": "none",
+            "implements": [],
+            "objects": [],
+            "activities": [],
+            "id": "71b7f3f7-bc5f-427e-803b-7dd4f389c7bb",
+            "class": null,
+            "serialization_class": null
+          },
+          {
+            "name": "Master Data Receiver",
+            "identifier": "dqualizer.fibumock.stammdaten.stammdaten.acds.kafka.MasterDataResponseConsumer#process",
+            "file": "MasterDataResponseConsumer.java",
+            "type": "none",
+            "implements": [],
+            "objects": [],
+            "activities": [],
+            "id": "5dfbb583-7ecb-4045-8497-c4d28117a670",
+            "class": null,
+            "serialization_class": null
+          },
+          {
+            "name": "Master Data",
+            "identifier": "dqualizer.fibumock.stammdaten.stammdaten.acds.kafka.MasterDataResponseDto",
+            "file": "MasterDataResponseDto.java",
+            "type": "none",
+            "implements": [],
+            "objects": [],
+            "activities": [],
+            "id": "b0c8d460-ea74-4163-a463-f4a7aa1f3808",
+            "class": null,
+            "serialization_class": null
+          },
+          {
+            "name": "Fiscal Year Data",
+            "identifier": "dqualizer.fibumock.stammdaten.stammdaten.acds.kafka.MasterDataResponseDto#getAccountDataForFiscalYearList()",
+            "file": "MasterDataResponseDto.java",
+            "type": "none",
+            "implements": [],
+            "objects": [],
+            "activities": [],
+            "id": "06b0897c-2f02-4519-af3c-cf487fd60362",
+            "class": null,
+            "serialization_class": null
+          }
+        ],
+        "id": "626d2ce0-fb90-4a67-97bb-e1b63911cc67",
+        "class": null,
+        "serialization_class": null
+      }
+    ],
+    "runtime_platforms": [
+      {
+        "platform_id": "dockerHost1",
+        "name": "Docker",
+        "uri": null,
+        "settings": {}
+      }
+    ],
+    "id": null,
+    "class": null,
+    "serialization_class": null
+  },
+  "domain_story": {
+    "actors": [
+      {
+        "@type": "Person",
+        "person_name": "Petra",
+        "id": "f3e3e3e3-7e4c-40b2-9494-aadec45fb2a4",
+        "class": null,
+        "name": "Petra",
+        "serialization_class": null
+      },
+      {
+        "@type": "System",
+        "system_name": "Assignment Service",
+        "id": "fasdfasf-684e-40b2-9494-aadec45fb2a4",
+        "class": null,
+        "name": "Assignment Service",
+        "serialization_class": null
+      }
+    ],
+    "work_objects": [
+      {
+        "@type": "WorkObject",
+        "name": "Company Data",
+        "type": "MISC",
+        "value_objects": null,
+        "id": "5855495e-b08d-4f28-a3ea-b042b10adc1b",
+        "class": null,
+        "serialization_class": null
+      },
+      {
+        "@type": "WorkObject",
+        "name": "Assignment Data",
+        "type": "DOCUMENT",
+        "value_objects": null,
+        "id": "ace97d17-685d-4563-bf4d-31d0339a505d",
+        "class": null,
+        "serialization_class": null
+      },
+      {
+        "@type": "WorkObject",
+        "name": "Master Data",
+        "type": "DOCUMENT",
+        "value_objects": [
+          {
+            "@type": "ValueObject",
+            "name": "FiscalYearData",
+            "id": "6f066acc-25c3-4c81-8cba-0b2209da3901",
+            "class": null,
+            "serialization_class": null
+          }
+        ],
+        "id": "680a0aad-546a-4baa-a3ee-55dc491ad76a",
+        "class": null,
+        "serialization_class": null
+      }
+    ],
+    "activities": [
+      {
+        "name": "Activity 5",
+        "action": "requests",
+        "number": 5,
+        "initiators": [
+          "fasdfasf-684e-40b2-9494-aadec45fb2a4"
+        ],
+        "targets": [],
+        "work_objects": [
+          "680a0aad-546a-4baa-a3ee-55dc491ad76a"
+        ],
+        "id": "5a3c4a6c-1176-403a-a941-845c0a80ca93",
+        "class": null,
+        "serialization_class": null
+      }
+    ],
+    "id": null,
+    "class": null,
+    "serialization_class": null
+  },
+  "mappings": [
+    {
+      "@type": "ValueObjectToTypeMapping",
+      "dst_element_id": "680a0aad-546a-4baa-a3ee-55dc491ad76a",
+      "architecture_element_id": "b0c8d460-ea74-4163-a463-f4a7aa1f3808"
+    },
+    {
+      "@type": "ActivityToCallMapping",
+      "dst_element_id": "5a3c4a6c-1176-403a-a941-845c0a80ca93",
+      "architecture_element_id": "71b7f3f7-bc5f-427e-803b-7dd4f389c7bb",
+      "end_correlation_id": "payload.getCorrelationId()",
+      "start_correlation_id": "message.getPayload().getCorrelationId()",
+      "end": "5dfbb583-7ecb-4045-8497-c4d28117a670",
+      "is_async": true
+    },
+    {
+      "@type": "SystemToComponentMapping",
+      "dst_element_id": "fasdfasf-684e-40b2-9494-aadec45fb2a4",
+      "architecture_element_id": "626d2ce0-fb90-4a67-97bb-e1b63911cc67"
+    }
+  ],
+  "id": "af6a8837-7e4c-40b2-9494-aadec45fb2a4",
+  "class": null,
+  "serialization_class": null
+}

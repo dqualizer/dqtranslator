@@ -1,0 +1,445 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "Map(String,String)": {
+      "type": "object"
+    },
+    "Version": {
+      "type": "object",
+      "properties": {
+        "build": {
+          "type": "array",
+          "items": {}
+        },
+        "pre": {
+          "type": "array",
+          "items": {}
+        },
+        "sequence": {
+          "type": "array",
+          "items": {}
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "_class": {
+      "type": "string"
+    },
+    "d_a_mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "architecture_element_id": {
+            "type": "string"
+          },
+          "dst_element_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "domain_story": {
+      "type": "object",
+      "properties": {
+        "_class": {
+          "type": "string"
+        },
+        "activities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_class": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "initiators": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "name": {
+                "type": "string"
+              },
+              "number": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "targets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "work_objects": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "actors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_class": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "work_objects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_class": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "MISC",
+                  "DOCUMENT",
+                  "FOLDER",
+                  "CALL",
+                  "MESSAGE",
+                  "DATA"
+                ]
+              },
+              "value_objects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_class": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "id": {
+      "type": "string"
+    },
+    "software_system": {
+      "type": "object",
+      "properties": {
+        "_class": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "PROD",
+            "TEST",
+            "DEV",
+            "INT"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "runtime_platforms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "platform_id": {
+                "type": "string"
+              },
+              "settings": {
+                "$ref": "#/$defs/Map(String,String)"
+              },
+              "uri": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_class": {
+                "type": "string"
+              },
+              "api_schema": {
+                "type": "object",
+                "properties": {
+                  "_class": {
+                    "type": "string"
+                  },
+                  "api": {
+                    "type": "string"
+                  },
+                  "context": {
+                    "type": "string"
+                  },
+                  "data_schemas": {
+                    "type": "object"
+                  },
+                  "field": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object"
+                        },
+                        "input": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "in": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "required": {
+                                "type": "boolean"
+                              },
+                              "type": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "operation": {
+                          "type": "string"
+                        },
+                        "operation_i_d": {
+                          "type": "string"
+                        },
+                        "output": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "path": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "server_info": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "environment": {
+                          "type": "string"
+                        },
+                        "host": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "version": {
+                    "$ref": "#/$defs/Version"
+                  }
+                }
+              },
+              "code_components": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_class": {
+                      "type": "string"
+                    },
+                    "activities": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "file": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "identifier": {
+                      "type": "string"
+                    },
+                    "myimplements": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "objects": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "deployment_name": {
+                "type": "string"
+              },
+              "endpoints": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_class": {
+                      "type": "string"
+                    },
+                    "code_component": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "methods": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "response_description": {
+                      "type": "object",
+                      "properties": {
+                        "expected_status_codes": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "format": "int32"
+                          }
+                        },
+                        "data": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "route": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "id": {
+                "type": "string"
+              },
+              "instrumentation_framework": {
+                "type": "object",
+                "properties": {
+                  "existing": {
+                    "type": "boolean"
+                  },
+                  "has_logging": {
+                    "type": "boolean"
+                  },
+                  "has_metrics": {
+                    "type": "boolean"
+                  },
+                  "has_traces": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "options": {
+                    "$ref": "#/$defs/Map(String,String)"
+                  }
+                }
+              },
+              "name": {
+                "type": "string"
+              },
+              "programming_framework": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "$ref": "#/$defs/Version"
+                  }
+                }
+              },
+              "programming_language": {
+                "type": "string"
+              },
+              "runtime_platform_id": {
+                "type": "string"
+              },
+              "uri": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
