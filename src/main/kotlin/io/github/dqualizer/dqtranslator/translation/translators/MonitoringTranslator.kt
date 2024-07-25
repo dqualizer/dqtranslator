@@ -52,7 +52,7 @@ class MonitoringTranslator(
 
     for (monitoring in rqaDefinition.runtimeQualityAnalysis.monitoringDefinition) {
 
-      val targetDstEntity: DSTElement = dam.domainStory.findElementByName(monitoring.target)
+      val targetDstEntity: DSTElement = dam.domainStory.findElementById(monitoring.target)
       val targetArchitectureEntity = mapper.mapToArchitecturalEntity(targetDstEntity)
 
       val mapping = mapper.getMappings(targetDstEntity).firstOrNull()
