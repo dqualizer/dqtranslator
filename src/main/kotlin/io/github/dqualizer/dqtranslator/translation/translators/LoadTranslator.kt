@@ -32,7 +32,9 @@ class LoadTranslator(
       .orElseThrow { NoSuchElementException("No DAM found with id ${rqaDefinition.domainId}") }
 
     val loadTestDefinition = rqaDefinition.runtimeQualityAnalysis.loadTestDefinition
-    if (loadTestDefinition.isEmpty()) return LoadTestConfiguration()
+    if (loadTestDefinition.isEmpty()) {
+      return LoadTestConfiguration()
+    }
 
     // Artifact will always be an Edge...
     val (systems, activities) = loadTestDefinition.partition { it.artifact?.activityId == null }
@@ -49,7 +51,6 @@ class LoadTranslator(
     )
     log.info(loadtestConfiguration.toString())
     return loadtestConfiguration
-
   }
 
   fun nodeToLoadTests(
