@@ -9,6 +9,7 @@ import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.CmsbArtifac
 import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.ProcessArtifact
 import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.ResilienceTestArtifact
 import io.github.dqualizer.dqlang.types.rqa.configuration.resilience.ResilienceTestConfiguration
+import io.github.dqualizer.dqlang.types.rqa.definition.Artifact
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
 import io.github.dqualizer.dqlang.types.rqa.definition.resilience.ResilienceTestDefinition
 import io.github.dqualizer.dqlang.types.rqa.definition.resilience.stimulus.UnavailabilityStimulus
@@ -56,6 +57,10 @@ class ResilienceTranslator(
     return resilienceTestConfiguration
   }
 
+  private fun toTechnicalArtifact(service: ServiceDescription?, component: CodeComponent?): Artifact {
+    return Artifact(service?.id, component?.id)
+  }
+
   fun nodeToEnrichedResilienceTestDefinition(
     resilienceTestDefinition: ResilienceTestDefinition,
     mapping: DomainArchitectureMapping
@@ -64,7 +69,7 @@ class ResilienceTranslator(
 
     if (resilienceTestDefinition.stimulus is UnavailabilityStimulus) {
       val enrichedArtifact =
-        ProcessArtifact(resilienceTestDefinition.artifact, service.processName!!, service.processPath!!)
+        ProcessArtifact(toTechnicalArtifact(service, null), service.processName!!, service.processPath!!)
       return ResilienceTestArtifact(
         resilienceTestDefinition.name,
         resilienceTestDefinition.description,
@@ -101,7 +106,7 @@ class ResilienceTranslator(
     val methodPathForActivity = entity.identifier
 
     val enrichedArtifact = CmsbArtifact(
-      resilienceTestDefinition.artifact,
+      toTechnicalArtifact(service, entity),
       service.cmsbBaseUrl!!,
       methodPathForActivity
     )
