@@ -67,7 +67,7 @@
     "monitoring_definition": [
       {
         "id": "63cf2522-bed9-4a92-bc54-542c43c60c38",
-        "target": "Activity 5",
+        "target": "5a3c4a6c-1176-403a-a941-845c0a80ca93",
         "measurement_name": "MasterDataFiscalYearDataLength",
         "measurement_type": "VALUE_INSPECTION",
         "measurement_unit": "",
@@ -75,7 +75,7 @@
       },
       {
         "id": "538e6899-55c4-42bb-86c7-97a21f76ada7",
-        "target": "Activity 5",
+        "target": "5a3c4a6c-1176-403a-a941-845c0a80ca93",
         "measurement_name": "MasterDataSearchExecutionTime",
         "measurement_type": "EXECUTION_TIME",
         "measurement_unit": "ms"
