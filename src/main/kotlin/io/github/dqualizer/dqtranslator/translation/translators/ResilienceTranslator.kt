@@ -2,6 +2,7 @@ package io.github.dqualizer.dqtranslator.translation.translators
 
 import io.github.dqualizer.dqlang.data.DAMMongoRepository
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.dam.architecture.ArchitectureEntity
 import io.github.dqualizer.dqlang.types.dam.architecture.CodeComponent
 import io.github.dqualizer.dqlang.types.dam.architecture.ServiceDescription
 import io.github.dqualizer.dqlang.types.rqa.configuration.RQAConfiguration
@@ -39,7 +40,7 @@ class ResilienceTranslator(
 
     val (resilienceTestDefinitionsForSystems, resilienceTestDefinitionsForActivities) = resilienceTestDefinitions.partition { it.artifact.activityId == null }
     val enrichedResilienceDefinitions = resilienceTestDefinitionsForSystems.map {
-      nodeToEnrichedResilienceTestDefinition(
+      nodeToResilienceTest(
         it,
         domainArchitectureMapping
       )
@@ -57,15 +58,19 @@ class ResilienceTranslator(
     return resilienceTestConfiguration
   }
 
-  private fun toTechnicalArtifact(service: ServiceDescription?, component: CodeComponent?): Artifact {
-    return Artifact(service?.id, component?.id)
+  private fun toTechnicalArtifact(service: ServiceDescription?, method: CodeComponent?): Artifact {
+    return Artifact(service?.id, method?.id)
   }
 
-  fun nodeToEnrichedResilienceTestDefinition(
+  /**
+   * create test for actor
+   */
+  fun nodeToResilienceTest(
     resilienceTestDefinition: ResilienceTestDefinition,
     mapping: DomainArchitectureMapping
   ): ResilienceTestArtifact {
-    val service = getService(resilienceTestDefinition, mapping)
+    val entity = getEntity(resilienceTestDefinition, mapping)
+    val service = getService(entity, mapping)
 
     if (resilienceTestDefinition.stimulus is UnavailabilityStimulus) {
       val enrichedArtifact =
@@ -92,21 +97,39 @@ class ResilienceTranslator(
     }
   }
 
+  /**
+   * create test for activity
+   */
   fun edgeToResilienceTest(
     resilienceTestDefinition: ResilienceTestDefinition,
     mapping: DomainArchitectureMapping
   ): ResilienceTestArtifact {
-    val service = getService(resilienceTestDefinition, mapping)
+    val entity = getEntity(resilienceTestDefinition, mapping)
+    val service = getService(entity, mapping)
     val activityIdFromTestDefinition = resilienceTestDefinition.artifact.activityId
 
     // use it.targets instead of it.initiators
     // e.g. Petra (initiator) calls endpoint of service (target)
     val activity = mapping.domainStory.activities.first { it.id == activityIdFromTestDefinition }
-    val entity = mapping.mapper.mapToArchitecturalEntity(activity) as CodeComponent
-    val methodPathForActivity = entity.identifier
+    val method = mapping.mapper.mapToArchitecturalEntity(activity) as CodeComponent
+    val methodPathForActivity = method.identifier
+
+    if (resilienceTestDefinition.stimulus is UnavailabilityStimulus) {
+      val enrichedArtifact =
+        ProcessArtifact(toTechnicalArtifact(service, method), service.processName!!, service.processPath!!)
+
+      return ResilienceTestArtifact(
+        resilienceTestDefinition.name,
+        resilienceTestDefinition.description,
+        enrichedArtifact,
+        null,
+        resilienceTestDefinition.stimulus,
+        resilienceTestDefinition.responseMeasures
+      )
+    }
 
     val enrichedArtifact = CmsbArtifact(
-      toTechnicalArtifact(service, entity),
+      toTechnicalArtifact(service, method),
       service.cmsbBaseUrl!!,
       methodPathForActivity
     )
@@ -121,14 +144,26 @@ class ResilienceTranslator(
     )
   }
 
-  private fun getService(
+  /**
+   * Returns the technical entity specified in the resilienceTestDefinition
+   */
+  private fun getEntity(
     resilienceTestDefinition: ResilienceTestDefinition,
     mapping: DomainArchitectureMapping
-  ): ServiceDescription {
+  ): ArchitectureEntity {
     // precondition: the selected actor is not empty and mapped to a service
     val actor = mapping.domainStory.actors.firstOrNull { it.id == resilienceTestDefinition.artifact.systemId }
       ?: throw IllegalArgumentException("The selected actor must not be null")
-    return mapping.mapper.mapToArchitecturalEntity(actor) as ServiceDescription
+    return mapping.mapper.mapToArchitecturalEntity(actor)
   }
 
+  /**
+   * Return ServiceDescription containing the provided entity
+   */
+  private fun getService(
+    entity: ArchitectureEntity,
+    mapping: DomainArchitectureMapping): ServiceDescription {
+    return mapping.softwareSystem.services.firstOrNull { it.codeComponents.contains(entity) }
+      ?: throw NoSuchElementException("There is no service with id ${entity.id}")
+  }
 }
