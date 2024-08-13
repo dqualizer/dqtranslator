@@ -2,6 +2,7 @@ package io.github.dqualizer.dqtranslator.translators.resilience
 
 import io.github.dqualizer.dqlang.data.DAMMongoRepository
 import io.github.dqualizer.dqlang.types.dam.DomainArchitectureMapping
+import io.github.dqualizer.dqlang.types.dam.architecture.CodeComponent
 import io.github.dqualizer.dqlang.types.dam.architecture.ServiceDescription
 import io.github.dqualizer.dqlang.types.dam.architecture.SoftwareSystem
 import io.github.dqualizer.dqlang.types.dam.domainstory.DomainStory
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.assertAll
 import org.mockito.Mockito
 import org.mockito.kotlin.whenever
 import java.util.*
+import java.util.Collections.singletonList
 
 class ResilienceTranslatorsTest {
 
@@ -35,12 +37,16 @@ class ResilienceTranslatorsTest {
     val systemId = "systemTestId"
     val domainId = "testDomainId"
     val processName = "aTestingProcessName"
+    val componentId = "componentTestId"
 
     val system = System("testSystem")
     system.id = domainId
 
+    val targetComponent = Mockito.mock(CodeComponent::class.java)
+    whenever(targetComponent.id).thenReturn(componentId)
     val targetService = Mockito.mock(ServiceDescription::class.java)
     whenever(targetService.name).thenReturn("someServiceName")
+    whenever(targetService.codeComponents).thenReturn(singletonList(targetComponent))
     whenever(targetService.id).thenReturn(systemId)
     whenever(targetService.processName).thenReturn(processName)
     whenever(targetService.processPath).thenReturn("aTestingProcessPath")
@@ -48,7 +54,7 @@ class ResilienceTranslatorsTest {
 
     val domainStory = DomainStory(listOf(system), emptyList(), emptyList())
 
-    val mapping = SystemToComponentMapping(system, targetService)
+    val mapping = SystemToComponentMapping(domainId, componentId)
     val dam = DomainArchitectureMapping(softwareSystem, domainStory, setOf(mapping))
     whenever(mappingService.findById(domainId)).thenReturn(Optional.of(dam))
 
