@@ -214,6 +214,7 @@ class MonitoringTranslatorsTest {
     )
 
     val dam = DomainArchitectureMapping(
+      "test-dam",
       softwareSystem,
       domainStory,
       mappings

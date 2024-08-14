@@ -55,7 +55,7 @@ class ResilienceTranslatorsTest {
     val domainStory = DomainStory(listOf(system), emptyList(), emptyList())
 
     val mapping = SystemToComponentMapping(domainId, componentId)
-    val dam = DomainArchitectureMapping(softwareSystem, domainStory, setOf(mapping))
+    val dam = DomainArchitectureMapping("test-dam", softwareSystem, domainStory, setOf(mapping))
     whenever(mappingService.findById(domainId)).thenReturn(Optional.of(dam))
 
     val artifact = Artifact(domainId, null)
