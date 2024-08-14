@@ -9,10 +9,10 @@ import io.github.dqualizer.dqlang.types.dam.domainstory.Person
 import io.github.dqualizer.dqlang.types.dam.domainstory.System
 import io.github.dqualizer.dqlang.types.rqa.configuration.loadtest.LoadTestConfiguration
 import io.github.dqualizer.dqlang.types.rqa.definition.RuntimeQualityAnalysisDefinition
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.ConstantLoad
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadIncrease
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadPeak
-import io.github.dqualizer.dqlang.types.rqa.definition.stimulus.loadprofile.LoadProfile
+import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.stimulus.loadprofile.ConstantLoad
+import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.stimulus.loadprofile.LoadIncrease
+import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.stimulus.loadprofile.LoadPeak
+import io.github.dqualizer.dqlang.types.rqa.definition.loadtest.stimulus.loadprofile.LoadProfile
 import io.github.dqualizer.dqtranslator.translation.RQATranslationChain
 import io.github.dqualizer.dqtranslator.translation.RQATranslator
 import org.assertj.core.api.Assertions.assertThat

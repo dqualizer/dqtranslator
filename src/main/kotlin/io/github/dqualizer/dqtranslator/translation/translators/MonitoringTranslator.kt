@@ -36,7 +36,8 @@ class MonitoringTranslator(
     rqaDefinition: RuntimeQualityAnalysisDefinition,
     target: RQAConfiguration
   ): RQAConfiguration {
-    if (rqaDefinition.runtimeQualityAnalysis.monitoringDefinition.size <= 0) {
+    val monitoringDefinitions = rqaDefinition.runtimeQualityAnalysis.monitoringDefinition
+    if (monitoringDefinitions.isEmpty()) {
       log.debug("No monitoring definitions found in RQA Definition")
       return target
     }
@@ -50,7 +51,7 @@ class MonitoringTranslator(
       dam.softwareSystem.services.associateBy({ it.name }, { it.instrumentationFramework })
 
 
-    for (monitoring in rqaDefinition.runtimeQualityAnalysis.monitoringDefinition) {
+    for (monitoring in monitoringDefinitions) {
 
       val targetDstEntity: DSTElement = dam.domainStory.findElementById(monitoring.target)
       val targetArchitectureEntity = mapper.mapToArchitecturalEntity(targetDstEntity)
